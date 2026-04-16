@@ -1,0 +1,5 @@
+com\example\mail\CorsConfig$1.class
+com\example\mail\DemoMailApplication.class
+com\example\mail\EmailController.class
+com\example\mail\EmailService.class
+com\example\mail\CorsConfig.class
