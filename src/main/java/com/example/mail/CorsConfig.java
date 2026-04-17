@@ -13,7 +13,11 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**")
-                    .allowedOrigins("http://localhost:3000", "https://torrepalivacanze.it")
+                    .allowedOrigins(
+                        "http://localhost:3000",
+                        "https://torrepalivacanze.it",
+                        "https://demo-mail-993653817397.europe-west8.run.app"
+                    )
                     .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                     .allowedHeaders("*")
                     .allowCredentials(true);
