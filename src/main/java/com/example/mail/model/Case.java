@@ -14,10 +14,18 @@ public class Case {
     private Long prezzo_notte;
     private Boolean disponibile;
     private String descrizione;
+    private String caratteristiche;
+    private String sottotitolo;
 
     // Getters and setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+
+    public String getCaratteristiche() { return caratteristiche; }
+    public void setCaratteristiche(String caratteristiche) { this.caratteristiche = caratteristiche; }
+
+    public String getSottotitolo() { return sottotitolo; }
+    public void setSottotitolo(String sottotitolo) { this.sottotitolo = sottotitolo; }
 
     public OffsetDateTime getCreated_at() { return created_at; }
     public void setCreated_at(OffsetDateTime created_at) { this.created_at = created_at; }
