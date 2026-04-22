@@ -10,6 +10,10 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
+    public EmailService() {
+        // Costruttore pubblico vuoto per Mockito
+    }
+
     public void sendSimpleMessage(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
