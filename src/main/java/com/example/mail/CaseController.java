@@ -1,4 +1,4 @@
-// package com.example.mail.controller;
+// package com.example.mail;
 
 // import com.example.mail.model.Case;
 // import com.example.mail.repository.CaseRepository;
