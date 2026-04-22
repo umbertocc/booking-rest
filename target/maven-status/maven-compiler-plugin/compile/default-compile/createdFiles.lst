@@ -1,5 +1,11 @@
+com\example\mail\model\Prenotazione.class
+com\example\mail\repository\CaseRepository.class
 com\example\mail\CorsConfig$1.class
+com\example\mail\controller\DisponibilitaController.class
+com\example\mail\model\Case.class
 com\example\mail\CorsConfig.class
+com\example\mail\repository\PrenotazioneRepository.class
 com\example\mail\DemoMailApplication.class
 com\example\mail\EmailController.class
 com\example\mail\EmailService.class
+com\example\mail\service\DisponibilitaService.class
