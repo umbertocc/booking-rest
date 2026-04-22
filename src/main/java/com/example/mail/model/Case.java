@@ -16,10 +16,14 @@ public class Case {
     private String descrizione;
     private String caratteristiche;
     private String sottotitolo;
+    private String immagine;
  
     // Getters and setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+
+    public String getImmagine() { return immagine; }
+    public void setImmagine(String immagine) { this.immagine = immagine; }
 
     public String getCaratteristiche() { return caratteristiche; }
     public void setCaratteristiche(String caratteristiche) { this.caratteristiche = caratteristiche; }
