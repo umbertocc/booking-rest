@@ -16,7 +16,7 @@ public class Case {
     private String descrizione;
     private String caratteristiche;
     private String sottotitolo;
-
+ 
     // Getters and setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
