@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
-
+ 
     public EmailService() {
         // Costruttore pubblico vuoto per Mockito
     }
