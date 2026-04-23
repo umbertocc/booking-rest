@@ -1,6 +1,6 @@
 package com.example.mail.controller;
 
-import com.example.mail.model.Case;
+import com.example.mail.dto.CasaDisponibileDTO;
 import com.example.mail.service.DisponibilitaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -19,7 +19,7 @@ public class DisponibilitaController {
     private DisponibilitaService disponibilitaService;
 
     @GetMapping("/case")
-    public List<Case> getCaseDisponibili(
+    public List<CasaDisponibileDTO> getCaseDisponibili(
             @RequestParam("checkIn") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkIn,
             @RequestParam("checkOut") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOut) {
         return disponibilitaService.getCaseDisponibili(checkIn, checkOut);

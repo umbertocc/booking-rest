@@ -1,0 +1,26 @@
+{
+    // Usa questa configurazione per collegarti al debug remoto sulla porta 5005
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "DemoMailApplication",
+            "request": "launch",
+            "mainClass": "com.example.mail.DemoMailApplication",
+            "projectName": "demo-mail"
+        },
+        {
+            "type": "java",
+            "name": "Launch Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Debug Spring Boot (porta 5005)",
+            "request": "attach",
+            "hostName": "localhost",
+            "port": 5005
+        }
+    ]
+}

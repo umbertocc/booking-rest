@@ -1,5 +1,7 @@
 com\example\mail\model\Prenotazione.class
+com\example\mail\repository\PrezzoCasaRepository.class
 com\example\mail\repository\CaseRepository.class
+com\example\mail\dto\CasaDisponibileDTO.class
 com\example\mail\CorsConfig$1.class
 com\example\mail\controller\DisponibilitaController.class
 com\example\mail\model\Case.class
@@ -9,3 +11,4 @@ com\example\mail\DemoMailApplication.class
 com\example\mail\EmailController.class
 com\example\mail\EmailService.class
 com\example\mail\service\DisponibilitaService.class
+com\example\mail\model\PrezzoCasa.class
