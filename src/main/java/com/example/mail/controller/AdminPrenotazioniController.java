@@ -35,9 +35,10 @@ public class AdminPrenotazioniController {
                 m.put("checkIn", p.getCheckIn());
                 m.put("checkOut", p.getCheckOut());
                 m.put("emailOspite", p.getEmailOspite());
+                m.put("note", p.getNote());
+                m.put("telefonoOspite", p.getTelefonoOspite());
                 m.put("prezzoTotale", p.getPrezzoTotale());
                 m.put("caparra", p.getCaparra());
-                m.put("note", p.getNote());
                 m.put("createdAt", p.getCreatedAt());
                 return m;
                 }).collect(Collectors.toList());
