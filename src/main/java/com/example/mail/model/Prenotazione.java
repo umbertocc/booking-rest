@@ -31,6 +31,10 @@ public class Prenotazione {
     @Column(name = "prezzo_totale")
     private BigDecimal prezzoTotale;
 
+
+    @Column(name = "caparra")
+    private BigDecimal caparra;
+
     @Column(name = "note")
     private String note;
 
@@ -58,6 +62,9 @@ public class Prenotazione {
 
     public BigDecimal getPrezzoTotale() { return prezzoTotale; }
     public void setPrezzoTotale(BigDecimal prezzoTotale) { this.prezzoTotale = prezzoTotale; }
+
+    public BigDecimal getCaparra() { return caparra; }
+    public void setCaparra(BigDecimal caparra) { this.caparra = caparra; }
 
     public String getNote() { return note; }
     public void setNote(String note) { this.note = note; }

@@ -24,13 +24,27 @@ public class AdminPrenotazioniController {
     @GetMapping
     public ResponseEntity<?> getPrenotazioniPerCasa() {
         Map<Case, List<Prenotazione>> prenotazioniPerCasa = adminPrenotazioniService.getPrenotazioniPerCasa();
-        // Per una risposta più pulita, restituiamo una lista di oggetti con casa e lista prenotazioni
         var response = prenotazioniPerCasa.entrySet().stream()
-                .map(entry -> Map.of(
-                        "casa", entry.getKey(),
-                        "prenotazioni", entry.getValue()
-                ))
-                .collect(Collectors.toList());
+            .map(entry -> {
+                Map<String, Object> casaMap = new java.util.HashMap<>();
+                casaMap.put("casa", entry.getKey());
+                List<Map<String, Object>> prenotazioniList = entry.getValue().stream().map(p -> {
+                Map<String, Object> m = new java.util.HashMap<>();
+                m.put("id", p.getId());
+                m.put("ospiteNome", p.getOspiteNome());
+                m.put("checkIn", p.getCheckIn());
+                m.put("checkOut", p.getCheckOut());
+                m.put("emailOspite", p.getEmailOspite());
+                m.put("prezzoTotale", p.getPrezzoTotale());
+                m.put("caparra", p.getCaparra());
+                m.put("note", p.getNote());
+                m.put("createdAt", p.getCreatedAt());
+                return m;
+                }).collect(Collectors.toList());
+                casaMap.put("prenotazioni", prenotazioniList);
+                return casaMap;
+            })
+            .collect(Collectors.toList());
         return ResponseEntity.ok(response);
     }
 }
