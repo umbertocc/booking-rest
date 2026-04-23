@@ -5,6 +5,10 @@ import com.example.mail.model.Prenotazione;
 import com.example.mail.service.AdminPrenotazioniService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import com.example.mail.dto.PrenotazioneDTO;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -47,5 +51,14 @@ public class AdminPrenotazioniController {
             })
             .collect(Collectors.toList());
         return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> updatePrenotazione(@PathVariable("id") java.util.UUID id, @RequestBody PrenotazioneDTO dto) {
+        PrenotazioneDTO updated = adminPrenotazioniService.updatePrenotazione(id, dto);
+        if (updated == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(updated);
     }
 }

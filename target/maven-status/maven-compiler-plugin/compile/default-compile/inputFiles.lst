@@ -3,6 +3,7 @@ C:\Users\CCNMRT87R\eclipse-workspace\demo-mail\src\main\java\com\example\mail\co
 C:\Users\CCNMRT87R\eclipse-workspace\demo-mail\src\main\java\com\example\mail\repository\PrezzoCasaRepository.java
 C:\Users\CCNMRT87R\eclipse-workspace\demo-mail\src\main\java\com\example\mail\filter\JwtAuthenticationFilter.java
 C:\Users\CCNMRT87R\eclipse-workspace\demo-mail\src\main\java\com\example\mail\repository\PrenotazioneRepository.java
+C:\Users\CCNMRT87R\eclipse-workspace\demo-mail\src\main\java\com\example\mail\dto\PrenotazioneDTO.java
 C:\Users\CCNMRT87R\eclipse-workspace\demo-mail\src\main\java\com\example\mail\controller\PrenotazioneController.java
 C:\Users\CCNMRT87R\eclipse-workspace\demo-mail\src\main\java\com\example\mail\CorsConfig.java
 C:\Users\CCNMRT87R\eclipse-workspace\demo-mail\src\main\java\com\example\mail\repository\CaseRepository.java
