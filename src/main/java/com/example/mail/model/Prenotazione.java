@@ -16,7 +16,7 @@ public class Prenotazione {
     @Column(name = "casa_id")
     private Long casaId;
 
-    @Column(name = "ospite_nome", nullable = false)
+    @Column(name = "ospite_nome", nullable = true)
     private String ospiteNome;
 
     @Column(name = "check_in", nullable = false)

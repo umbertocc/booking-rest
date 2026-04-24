@@ -6,7 +6,6 @@ import com.example.mail.dto.PrenotazioneDTO;
 import com.example.mail.repository.CaseRepository;
 import com.example.mail.repository.PrenotazioneRepository;
 import org.springframework.stereotype.Service;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -65,4 +64,44 @@ public class AdminPrenotazioniService {
             out.setCreatedAt(p.getCreatedAt());
             return out;
         }
+
+     public boolean deletePrenotazione(java.util.UUID id) {
+        if (prenotazioneRepository.existsById(id)) {
+            prenotazioneRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
+        public PrenotazioneDTO createPrenotazione(com.example.mail.dto.PrenotazioneDTO dto) {
+        // Verifica campi obbligatori
+        if (dto.getOspiteNome() == null || dto.getCheckIn() == null || dto.getCheckOut() == null || dto.getCasaId() == null) {
+            return null;
+        }
+        Prenotazione p = new Prenotazione();
+        p.setOspiteNome(dto.getOspiteNome());
+        p.setCheckIn(dto.getCheckIn());
+        p.setCheckOut(dto.getCheckOut());
+        p.setEmailOspite(dto.getEmailOspite());
+        p.setTelefonoOspite(dto.getTelefonoOspite());
+        p.setPrezzoTotale(dto.getPrezzoTotale());
+        p.setCaparra(dto.getCaparra());
+        p.setNote(dto.getNote());
+        p.setCreatedAt(dto.getCreatedAt() != null ? dto.getCreatedAt() : java.time.OffsetDateTime.now());
+        p.setCasaId(dto.getCasaId());
+        prenotazioneRepository.save(p);
+        PrenotazioneDTO out = new PrenotazioneDTO();
+        out.setId(p.getId());
+        out.setOspiteNome(p.getOspiteNome());
+        out.setCheckIn(p.getCheckIn());
+        out.setCheckOut(p.getCheckOut());
+        out.setEmailOspite(p.getEmailOspite());
+        out.setTelefonoOspite(p.getTelefonoOspite());
+        out.setPrezzoTotale(p.getPrezzoTotale());
+        out.setCaparra(p.getCaparra());
+        out.setNote(p.getNote());
+        out.setCreatedAt(p.getCreatedAt());
+        out.setCasaId(p.getCasaId());
+        return out;
+    }
 }

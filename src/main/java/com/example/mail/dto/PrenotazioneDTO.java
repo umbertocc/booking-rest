@@ -18,6 +18,11 @@ public class PrenotazioneDTO {
 	private BigDecimal prezzoTotale;
 	private BigDecimal caparra;
 	private OffsetDateTime createdAt;
+	private Long casaId;
+
+    
+	public Long getCasaId() { return casaId; }
+	public void setCasaId(Long casaId) { this.casaId = casaId; }
 
 	public UUID getId() { return id; }
 	public void setId(UUID id) { this.id = id; }

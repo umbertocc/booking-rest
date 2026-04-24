@@ -6,15 +6,17 @@ import com.example.mail.service.AdminPrenotazioniService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import com.example.mail.dto.PrenotazioneDTO;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.DeleteMapping;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 
 @RestController
 @RequestMapping("/admin/prenotazioni")
@@ -60,5 +62,24 @@ public class AdminPrenotazioniController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(updated);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deletePrenotazione(@PathVariable("id") java.util.UUID id) {
+        boolean deleted = adminPrenotazioniService.deletePrenotazione(id);
+        if (deleted) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+        @PostMapping
+    public ResponseEntity<?> createPrenotazione(@RequestBody PrenotazioneDTO dto) {
+        PrenotazioneDTO created = adminPrenotazioniService.createPrenotazione(dto);
+        if (created == null) {
+            return ResponseEntity.badRequest().body("Dati mancanti o non validi");
+        }
+        return ResponseEntity.status(201).body(created);
     }
 }
