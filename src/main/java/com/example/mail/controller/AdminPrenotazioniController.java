@@ -80,6 +80,6 @@ public class AdminPrenotazioniController {
         if (created == null) {
             return ResponseEntity.badRequest().body("Dati mancanti o non validi");
         }
-        return ResponseEntity.status(201).body(created);
+        return ResponseEntity.status(201).body(created); 
     }
 }
