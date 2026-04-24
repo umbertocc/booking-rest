@@ -18,7 +18,7 @@ public class CorsConfig {
                         "https://torrepalivacanze.it",
                         "https://demo-mail-993653817397.europe-west8.run.app"
                     )
-                    .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                    .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                     .allowedHeaders("*")
                     .allowCredentials(true);
 
@@ -28,7 +28,7 @@ public class CorsConfig {
                         "https://torrepalivacanze.it",
                         "https://demo-mail-993653817397.europe-west8.run.app"
                     )
-                    .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                    .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                     .allowedHeaders("*")
                     .allowCredentials(true);
             }
