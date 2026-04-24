@@ -1,0 +1,6 @@
+# Escludi tutto il contenuto della cartella target
+/target/
+# Ma includi file specifici se necessario (decommenta la riga sotto per esempio)
+#!/target/keepme.txt
+# Escludi file specifici dal target
+/target/contenuti
