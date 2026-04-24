@@ -41,14 +41,14 @@ public class AdminPrenotazioniService {
             if (opt.isEmpty()) return null;
             Prenotazione p = opt.get();
             // Aggiorna solo i campi non null del DTO
-            if (dto.getOspiteNome() != null) p.setOspiteNome(dto.getOspiteNome());
-            if (dto.getCheckIn() != null) p.setCheckIn(dto.getCheckIn());
-            if (dto.getCheckOut() != null) p.setCheckOut(dto.getCheckOut());
-            if (dto.getEmailOspite() != null) p.setEmailOspite(dto.getEmailOspite());
-            if (dto.getTelefonoOspite() != null) p.setTelefonoOspite(dto.getTelefonoOspite());
-            if (dto.getPrezzoTotale() != null) p.setPrezzoTotale(dto.getPrezzoTotale());
-            if (dto.getCaparra() != null) p.setCaparra(dto.getCaparra());
-            if (dto.getNote() != null) p.setNote(dto.getNote());
+            p.setOspiteNome(dto.getOspiteNome());
+            p.setCheckIn(dto.getCheckIn());
+            p.setCheckOut(dto.getCheckOut());
+            p.setEmailOspite(dto.getEmailOspite());
+            p.setTelefonoOspite(dto.getTelefonoOspite());
+            p.setPrezzoTotale(dto.getPrezzoTotale());
+            p.setCaparra(dto.getCaparra());
+            p.setNote(dto.getNote());
             // Non aggiorniamo id, casaId, createdAt
             prenotazioneRepository.save(p);
             PrenotazioneDTO out = new PrenotazioneDTO();
