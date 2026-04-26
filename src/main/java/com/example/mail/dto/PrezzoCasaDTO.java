@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 public class PrezzoCasaDTO {
     private Long id;
+    private Long casaId;
     private LocalDate dataInizio;
     private LocalDate dataFine;
     private Integer prezzoTotale;
@@ -13,12 +14,20 @@ public class PrezzoCasaDTO {
         // Costruttore vuoto richiesto per la deserializzazione JSON
     }
 
-    public PrezzoCasaDTO(Long id, LocalDate dataInizio, LocalDate dataFine, Integer prezzoNotte, Integer prezzoTotale) {
+    public PrezzoCasaDTO(Long id, Long casaId, LocalDate dataInizio, LocalDate dataFine, Integer prezzoNotte, Integer prezzoTotale) {
         this.id = id;
+        this.casaId = casaId;
         this.dataInizio = dataInizio;
         this.dataFine = dataFine;
         this.prezzoNotte = prezzoNotte;
         this.prezzoTotale = prezzoTotale;
+    }
+    public Long getCasaId() {
+        return casaId;
+    }
+
+    public void setCasaId(Long casaId) {
+        this.casaId = casaId;
     }
 
     public PrezzoCasaDTO(LocalDate dataInizio, LocalDate dataFine, Integer prezzoNotte, Integer prezzoTotale) {
