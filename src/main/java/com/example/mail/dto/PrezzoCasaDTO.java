@@ -8,17 +8,12 @@ public class PrezzoCasaDTO {
     private Integer prezzoTotale;
     private Integer prezzoNotte;
 
-    public PrezzoCasaDTO(LocalDate dataInizio, LocalDate dataFine, Integer prezzoTotale) {
+    public PrezzoCasaDTO(LocalDate dataInizio, LocalDate dataFine, Integer prezzoNotte, Integer prezzoTotale) {
         this.dataInizio = dataInizio;
         this.dataFine = dataFine;
-        this.prezzoTotale = prezzoTotale;
-    }
-
-    public PrezzoCasaDTO(LocalDate dataInizio, LocalDate dataFine, Integer prezzoTotale, Integer prezzoNotte) {
-        this.dataInizio = dataInizio;
-        this.dataFine = dataFine;
-        this.prezzoTotale = prezzoTotale;
         this.prezzoNotte = prezzoNotte;
+        this.prezzoTotale = prezzoTotale;
+        
     }
 
     public LocalDate getDataInizio() {

@@ -12,7 +12,6 @@ com\example\mail\CorsConfig.class
 com\example\mail\repository\PrenotazioneRepository.class
 com\example\mail\controller\AdminPrezzoCasaController.class
 com\example\mail\EmailService.class
-com\example\mail\dto\PrezzoCasaDTOConNotte.class
 com\example\mail\service\AdminPrenotazioniService.class
 com\example\mail\service\PrezzoCasaService.class
 com\example\mail\repository\CaseRepository.class

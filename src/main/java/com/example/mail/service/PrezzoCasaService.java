@@ -24,6 +24,7 @@ public class PrezzoCasaService {
             return new PrezzoCasaDTO(
                 prezzo.getInizioPeriodo(),
                 prezzo.getFinePeriodo(),
+                prezzo.getPrezzoNotte(),
                 prezzoTotale
             );
         }).collect(Collectors.toList());
@@ -38,6 +39,7 @@ public class PrezzoCasaService {
             return new PrezzoCasaDTO(
                 prezzo.getInizioPeriodo(),
                 prezzo.getFinePeriodo(),
+                prezzo.getPrezzoNotte(),
                 prezzoTotale
             );
         }).collect(Collectors.toList());
@@ -51,20 +53,7 @@ public class PrezzoCasaService {
         prezzo.setInizioPeriodo(dto.getDataInizio());
         prezzo.setFinePeriodo(dto.getDataFine());
         prezzo.setPrezzoTotale(dto.getPrezzoTotale());
-        // Modifica sempre anche prezzoNotte
-        if (dto instanceof com.example.mail.dto.PrezzoCasaDTO) {
-            try {
-                java.lang.reflect.Method m = dto.getClass().getMethod("getPrezzoNotte");
-                Object prezzoNotteObj = m.invoke(dto);
-                if (prezzoNotteObj != null) {
-                    prezzo.setPrezzoNotte((Integer) prezzoNotteObj);
-                }
-            } catch (NoSuchMethodException ignored) {
-                // Il metodo non esiste, ignora
-            } catch (Exception e) {
-                throw new RuntimeException("Errore nell'aggiornamento di prezzoNotte", e);
-            }
-        }
+        prezzo.setPrezzoNotte(dto.getPrezzoNotte());
         prezzoCasaRepository.save(prezzo);
     }
 
@@ -73,8 +62,8 @@ public class PrezzoCasaService {
         prezzo.setInizioPeriodo(dto.getDataInizio());
         prezzo.setFinePeriodo(dto.getDataFine());
         prezzo.setPrezzoTotale(dto.getPrezzoTotale());
+        prezzo.setPrezzoNotte(dto.getPrezzoNotte());
         // prezzo.setCasa(...); // Da impostare se serve
-        // prezzo.setPrezzoNotte(...); // Da impostare se serve
         prezzoCasaRepository.save(prezzo);
     }
 }
