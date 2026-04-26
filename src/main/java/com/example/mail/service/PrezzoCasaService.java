@@ -22,6 +22,7 @@ public class PrezzoCasaService {
             if (giorni < 1) giorni = 1; // almeno 1 giorno
             int prezzoTotale = prezzo.getPrezzoNotte() * (int) giorni;
             return new PrezzoCasaDTO(
+                prezzo.getId(),
                 prezzo.getInizioPeriodo(),
                 prezzo.getFinePeriodo(),
                 prezzo.getPrezzoNotte(),
@@ -37,6 +38,7 @@ public class PrezzoCasaService {
             if (giorni < 1) giorni = 1; // almeno 1 giorno
             int prezzoTotale = prezzo.getPrezzoNotte() * (int) giorni;
             return new PrezzoCasaDTO(
+                prezzo.getId(),
                 prezzo.getInizioPeriodo(),
                 prezzo.getFinePeriodo(),
                 prezzo.getPrezzoNotte(),
