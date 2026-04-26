@@ -26,6 +26,9 @@ public class PrezzoCasa {
     @Column(name = "descrizione")
     private String descrizione;
 
+    @Column(name = "prezzo_totale")
+    private Integer prezzoTotale;
+
     // Getters e setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -44,4 +47,7 @@ public class PrezzoCasa {
 
     public String getDescrizione() { return descrizione; }
     public void setDescrizione(String descrizione) { this.descrizione = descrizione; }
+    
+    public Integer getPrezzoTotale() { return prezzoTotale; }
+    public void setPrezzoTotale(Integer prezzoTotale) { this.prezzoTotale = prezzoTotale; }
 }
