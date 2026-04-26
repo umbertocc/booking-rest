@@ -6,11 +6,11 @@ C:\Users\CCNMRT87R\eclipse-workspace\demo-mail\src\main\java\com\example\mail\Co
 C:\Users\CCNMRT87R\eclipse-workspace\demo-mail\src\main\java\com\example\mail\model\Prenotazione.java
 C:\Users\CCNMRT87R\eclipse-workspace\demo-mail\src\main\java\com\example\mail\model\PrezzoCasa.java
 C:\Users\CCNMRT87R\eclipse-workspace\demo-mail\src\main\java\com\example\mail\controller\DisponibilitaController.java
-C:\Users\CCNMRT87R\eclipse-workspace\demo-mail\src\main\java\com\example\mail\controller\PrezzoCasaController.java
 C:\Users\CCNMRT87R\eclipse-workspace\demo-mail\src\main\java\com\example\mail\model\Case.java
 C:\Users\CCNMRT87R\eclipse-workspace\demo-mail\src\main\java\com\example\mail\controller\AdminAuthController.java
 C:\Users\CCNMRT87R\eclipse-workspace\demo-mail\src\main\java\com\example\mail\repository\PrezzoCasaRepository.java
 C:\Users\CCNMRT87R\eclipse-workspace\demo-mail\src\main\java\com\example\mail\repository\PrenotazioneRepository.java
+C:\Users\CCNMRT87R\eclipse-workspace\demo-mail\src\main\java\com\example\mail\controller\AdminPrezzoCasaController.java
 C:\Users\CCNMRT87R\eclipse-workspace\demo-mail\src\main\java\com\example\mail\repository\CaseRepository.java
 C:\Users\CCNMRT87R\eclipse-workspace\demo-mail\src\main\java\com\example\mail\service\DisponibilitaService.java
 C:\Users\CCNMRT87R\eclipse-workspace\demo-mail\src\main\java\com\example\mail\controller\AdminPrenotazioniController.java

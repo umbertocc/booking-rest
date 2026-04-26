@@ -10,6 +10,7 @@ com\example\mail\filter\JwtAuthenticationFilter.class
 com\example\mail\controller\CaseController.class
 com\example\mail\CorsConfig.class
 com\example\mail\repository\PrenotazioneRepository.class
+com\example\mail\controller\AdminPrezzoCasaController.class
 com\example\mail\EmailService.class
 com\example\mail\service\AdminPrenotazioniService.class
 com\example\mail\service\PrezzoCasaService.class
@@ -18,7 +19,6 @@ com\example\mail\CorsConfig$1.class
 com\example\mail\controller\AdminAuthController.class
 com\example\mail\model\Case.class
 com\example\mail\controller\AdminPrenotazioniController.class
-com\example\mail\controller\PrezzoCasaController.class
 com\example\mail\DemoMailApplication.class
 com\example\mail\config\SecurityConfig.class
 com\example\mail\EmailController.class

@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/prezzi-case")
-public class PrezzoCasaController {
+@RequestMapping("/admin/prezzi-case")
+public class AdminPrezzoCasaController {
     @Autowired
     private PrezzoCasaService prezzoCasaService;
 
