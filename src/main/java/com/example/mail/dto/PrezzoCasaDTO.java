@@ -6,11 +6,19 @@ public class PrezzoCasaDTO {
     private LocalDate dataInizio;
     private LocalDate dataFine;
     private Integer prezzoTotale;
+    private Integer prezzoNotte;
 
     public PrezzoCasaDTO(LocalDate dataInizio, LocalDate dataFine, Integer prezzoTotale) {
         this.dataInizio = dataInizio;
         this.dataFine = dataFine;
         this.prezzoTotale = prezzoTotale;
+    }
+
+    public PrezzoCasaDTO(LocalDate dataInizio, LocalDate dataFine, Integer prezzoTotale, Integer prezzoNotte) {
+        this.dataInizio = dataInizio;
+        this.dataFine = dataFine;
+        this.prezzoTotale = prezzoTotale;
+        this.prezzoNotte = prezzoNotte;
     }
 
     public LocalDate getDataInizio() {
@@ -35,5 +43,13 @@ public class PrezzoCasaDTO {
 
     public void setPrezzoTotale(Integer prezzoTotale) {
         this.prezzoTotale = prezzoTotale;
+    }
+
+    public Integer getPrezzoNotte() {
+        return prezzoNotte;
+    }
+
+    public void setPrezzoNotte(Integer prezzoNotte) {
+        this.prezzoNotte = prezzoNotte;
     }
 }

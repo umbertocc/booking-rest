@@ -51,6 +51,20 @@ public class PrezzoCasaService {
         prezzo.setInizioPeriodo(dto.getDataInizio());
         prezzo.setFinePeriodo(dto.getDataFine());
         prezzo.setPrezzoTotale(dto.getPrezzoTotale());
+        // Modifica sempre anche prezzoNotte
+        if (dto instanceof com.example.mail.dto.PrezzoCasaDTO) {
+            try {
+                java.lang.reflect.Method m = dto.getClass().getMethod("getPrezzoNotte");
+                Object prezzoNotteObj = m.invoke(dto);
+                if (prezzoNotteObj != null) {
+                    prezzo.setPrezzoNotte((Integer) prezzoNotteObj);
+                }
+            } catch (NoSuchMethodException ignored) {
+                // Il metodo non esiste, ignora
+            } catch (Exception e) {
+                throw new RuntimeException("Errore nell'aggiornamento di prezzoNotte", e);
+            }
+        }
         prezzoCasaRepository.save(prezzo);
     }
 
