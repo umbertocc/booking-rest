@@ -9,6 +9,10 @@ public class PrezzoCasaDTO {
     private Integer prezzoTotale;
     private Integer prezzoNotte;
 
+    public PrezzoCasaDTO() {
+        // Costruttore vuoto richiesto per la deserializzazione JSON
+    }
+
     public PrezzoCasaDTO(Long id, LocalDate dataInizio, LocalDate dataFine, Integer prezzoNotte, Integer prezzoTotale) {
         this.id = id;
         this.dataInizio = dataInizio;
