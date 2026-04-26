@@ -28,6 +28,20 @@ public class PrezzoCasaService {
             );
         }).collect(Collectors.toList());
     }
+
+    public List<PrezzoCasaDTO> getPrezziCaseByCasaId(Long casaId) {
+        List<PrezzoCasa> prezzi = prezzoCasaRepository.findByCasaId(casaId);
+        return prezzi.stream().map(prezzo -> {
+            long giorni = ChronoUnit.DAYS.between(prezzo.getInizioPeriodo(), prezzo.getFinePeriodo());
+            if (giorni < 1) giorni = 1; // almeno 1 giorno
+            int prezzoTotale = prezzo.getPrezzoNotte() * (int) giorni;
+            return new PrezzoCasaDTO(
+                prezzo.getInizioPeriodo(),
+                prezzo.getFinePeriodo(),
+                prezzoTotale
+            );
+        }).collect(Collectors.toList());
+    }
     public void deletePrezzoCasa(Long id) {
         prezzoCasaRepository.deleteById(id);
     }

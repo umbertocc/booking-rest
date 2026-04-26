@@ -15,8 +15,17 @@ public class AdminPrezzoCasaController {
     private PrezzoCasaService prezzoCasaService;
 
     @GetMapping
-    public List<PrezzoCasaDTO> getPrezziCase() {
-        return prezzoCasaService.getPrezziCase();
+    public List<PrezzoCasaDTO> getPrezziCase(@org.springframework.web.bind.annotation.RequestParam(value = "casaId", required = false) Long casaId) {
+        if (casaId != null) {
+            return prezzoCasaService.getPrezziCaseByCasaId(casaId);
+        } else {
+            return prezzoCasaService.getPrezziCase();
+        }
+    }
+
+    @GetMapping("/by-casa")
+    public List<PrezzoCasaDTO> getPrezziCaseByCasaId(@org.springframework.web.bind.annotation.RequestParam("casaId") Long casaId) {
+        return prezzoCasaService.getPrezziCaseByCasaId(casaId);
     }
 
     @org.springframework.web.bind.annotation.DeleteMapping("/{id}")
