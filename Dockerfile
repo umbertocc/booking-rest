@@ -1,14 +1,14 @@
-# Dockerfile per Spring Boot (JAR)
+# Stage 1: build
+FROM maven:3.9-eclipse-temurin-17-alpine AS builder
+WORKDIR /build
+COPY pom.xml .
+RUN mvn dependency:go-offline -q
+COPY src ./src
+RUN mvn package -DskipTests -q
+
+# Stage 2: runtime
 FROM eclipse-temurin:17-jre-alpine
-
-# Cartella di lavoro
 WORKDIR /app
-
-# Copia il jar generato da Maven
-COPY target/demo-mail-0.0.1-SNAPSHOT.jar app.jar
-
-# Espone la porta 8080 (default Spring Boot)
+COPY --from=builder /build/target/demo-mail-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8080
-
-# Comando di avvio
 ENTRYPOINT ["java", "-jar", "app.jar"]
