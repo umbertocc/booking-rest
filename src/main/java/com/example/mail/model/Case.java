@@ -14,7 +14,7 @@ public class Case {
     private Long prezzo_notte;
     private Boolean disponibile;
     private String descrizione;
-    private String caratteristiche;
+    private String caratteristiche; 
     private String sottotitolo;
     private String immagine;
     private String linkDettaglio;
