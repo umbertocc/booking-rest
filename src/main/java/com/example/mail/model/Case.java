@@ -17,14 +17,14 @@ public class Case {
     private String caratteristiche; 
     private String sottotitolo;
     private String immagine;
-    private String linkDettaglio;
+    private String link_dettaglio;
  
     // Getters and setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public String getLinkDettaglio() { return linkDettaglio; }
-    public void setLinkDettaglio(String linkDettaglio) { this.linkDettaglio = linkDettaglio; }
+    public String getLink_dettaglio() { return link_dettaglio; }
+    public void setLink_dettaglio(String link_dettaglio) { this.link_dettaglio = link_dettaglio; }
 
     public String getImmagine() { return immagine; }
     public void setImmagine(String immagine) { this.immagine = immagine; }
