@@ -31,7 +31,7 @@ public class DisponibilitaService {
                 .collect(Collectors.toList());
         List<Case> caseDisponibili;
         if (caseOccupate.isEmpty()) {
-            caseDisponibili = caseRepository.findAll();
+            caseDisponibili = caseRepository.findAll(); 
         } else {
             caseDisponibili = caseRepository.findAll().stream()
                     .filter(c -> !caseOccupate.contains(c.getId()))
