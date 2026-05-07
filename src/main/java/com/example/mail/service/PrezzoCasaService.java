@@ -1,3 +1,4 @@
+import org.springframework.transaction.annotation.Transactional;
 package com.example.mail.service;
 
 import com.example.mail.model.Case;
@@ -54,10 +55,12 @@ public class PrezzoCasaService {
             );
         }).collect(Collectors.toList());
     }
+    @Transactional
     public void deletePrezzoCasa(Long id) {
         prezzoCasaRepository.deleteById(id);
     }
 
+    @Transactional
     public void updatePrezzoCasa(Long id, PrezzoCasaDTO dto) {
         PrezzoCasa prezzo = prezzoCasaRepository.findById(id).orElseThrow(() -> new RuntimeException("PrezzoCasa non trovato"));
         prezzo.setInizioPeriodo(dto.getDataInizio());
@@ -67,6 +70,7 @@ public class PrezzoCasaService {
         prezzoCasaRepository.save(prezzo);
     }
 
+    @Transactional
     public void addPrezzoCasa(PrezzoCasaDTO dto) {
         PrezzoCasa prezzo = new PrezzoCasa();
         prezzo.setInizioPeriodo(dto.getDataInizio());

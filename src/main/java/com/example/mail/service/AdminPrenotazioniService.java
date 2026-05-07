@@ -6,6 +6,7 @@ import com.example.mail.dto.PrenotazioneDTO;
 import com.example.mail.repository.CaseRepository;
 import com.example.mail.repository.PrenotazioneRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -36,6 +37,7 @@ public class AdminPrenotazioniService {
         return result;
     }
 
+        @Transactional
         public PrenotazioneDTO updatePrenotazione(java.util.UUID id, PrenotazioneDTO dto) {
             Optional<Prenotazione> opt = prenotazioneRepository.findById(id);
             if (opt.isEmpty()) return null;
@@ -65,7 +67,8 @@ public class AdminPrenotazioniService {
             return out;
         }
 
-     public boolean deletePrenotazione(java.util.UUID id) {
+    @Transactional
+    public boolean deletePrenotazione(java.util.UUID id) {
         if (prenotazioneRepository.existsById(id)) {
             prenotazioneRepository.deleteById(id);
             return true;
@@ -73,7 +76,8 @@ public class AdminPrenotazioniService {
         return false;
     }
 
-        public PrenotazioneDTO createPrenotazione(com.example.mail.dto.PrenotazioneDTO dto) {
+    @Transactional
+    public PrenotazioneDTO createPrenotazione(com.example.mail.dto.PrenotazioneDTO dto) {
         // Verifica campi obbligatori
         if (dto.getOspiteNome() == null || dto.getCheckIn() == null || dto.getCheckOut() == null || dto.getCasaId() == null) {
             return null;
