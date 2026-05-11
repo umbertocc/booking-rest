@@ -1,6 +1,6 @@
-import org.springframework.transaction.annotation.Transactional;
 package com.example.mail.service;
 
+import org.springframework.transaction.annotation.Transactional;
 import com.example.mail.model.Case;
 import com.example.mail.repository.CaseRepository;
 import com.example.mail.dto.PrezzoCasaDTO;

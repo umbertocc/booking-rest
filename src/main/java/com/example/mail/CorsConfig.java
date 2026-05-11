@@ -15,6 +15,7 @@ public class CorsConfig {
                 registry.addMapping("/api/**")
                     .allowedOrigins(
                         "http://localhost:3000",
+                        "http://127.0.0.1:5500",
                         "https://torrepalivacanze.it",
                         "https://demo-mail-993653817397.europe-west8.run.app"
                     )
@@ -25,6 +26,7 @@ public class CorsConfig {
                 registry.addMapping("/admin/**")
                     .allowedOrigins(
                         "http://localhost:3000",
+                        "http://127.0.0.1:5500",
                         "https://torrepalivacanze.it",
                         "https://demo-mail-993653817397.europe-west8.run.app"
                     )
