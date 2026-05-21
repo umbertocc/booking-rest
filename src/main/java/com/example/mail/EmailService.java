@@ -19,6 +19,7 @@ public class EmailService {
         message.setTo(to);
         message.setSubject(subject);
         message.setText(text);
+        message.setFrom("info@torrepalivacanze.it");
         mailSender.send(message);
     }
 }
