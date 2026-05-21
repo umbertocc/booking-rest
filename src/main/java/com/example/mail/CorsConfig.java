@@ -17,7 +17,8 @@ public class CorsConfig {
                         "http://localhost:3000",
                         "http://127.0.0.1:5500",
                         "https://torrepalivacanze.it",
-                        "https://demo-mail-993653817397.europe-west8.run.app"
+                        "https://demo-mail-993653817397.europe-west8.run.app",
+                        "https://umbertocucinelli.it"
                     )
                     .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                     .allowedHeaders("*")
@@ -28,7 +29,8 @@ public class CorsConfig {
                         "http://localhost:3000",
                         "http://127.0.0.1:5500",
                         "https://torrepalivacanze.it",
-                        "https://demo-mail-993653817397.europe-west8.run.app"
+                        "https://demo-mail-993653817397.europe-west8.run.app",
+                        "https://umbertocucinelli.it"
                     )
                     .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                     .allowedHeaders("*")
