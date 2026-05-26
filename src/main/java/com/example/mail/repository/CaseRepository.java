@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CaseRepository extends JpaRepository<Case, Long> {
-	Case findByEmailAndPassword(String email, String password);
+	List<Case> findByEmailAndPassword(String email, String password);
 	List<Case> findByEmail(String email);
 }

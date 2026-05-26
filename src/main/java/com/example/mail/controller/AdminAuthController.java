@@ -22,8 +22,8 @@ public class AdminAuthController {
     public ResponseEntity<?> login(@RequestBody Map<String, String> request) {
         String email = request.get("email");
         String password = request.get("password");
-        Case adminCase = caseRepository.findByEmailAndPassword(email, password);
-        if (adminCase != null) {
+        var adminCases = caseRepository.findByEmailAndPassword(email, password);
+        if (adminCases != null && !adminCases.isEmpty()) {
             String token = JwtUtil.generateToken(email);
             Map<String, String> response = new HashMap<>();
             response.put("token", token);
