@@ -22,4 +22,10 @@ public class CaseController {
         String email = JwtUtil.getUsernameFromToken(token);
         return caseRepository.findByEmail(email);
     }
+
+    // Endpoint pubblico che restituisce tutte le case
+    @GetMapping("/public")
+    public List<Case> getAllPublic() {
+        return caseRepository.findAll();
+    }
 }
