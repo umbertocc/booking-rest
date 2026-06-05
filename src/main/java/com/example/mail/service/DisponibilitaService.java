@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
+import java.util.Set;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,20 +24,18 @@ public class DisponibilitaService {
     @Autowired
     private PrezzoCasaRepository prezzoCasaRepository;
 
-    public List<CasaDisponibileDTO> getCaseDisponibili(LocalDate checkIn, LocalDate checkOut) {
+        public List<CasaDisponibileDTO> getCaseDisponibili(LocalDate checkIn, LocalDate checkOut, Integer ospiti) {
         // Trova tutte le case che hanno almeno una prenotazione in conflitto
-        List<Long> caseOccupate = prenotazioneRepository.findPrenotazioniConflittoPerTutteLeCase(checkIn, checkOut)
+        Set<Long> caseOccupate = prenotazioneRepository.findPrenotazioniConflittoPerTutteLeCase(checkIn, checkOut)
                 .stream()
                 .map(p -> p.getCasaId())
-                .collect(Collectors.toList());
-        List<Case> caseDisponibili;
-        if (caseOccupate.isEmpty()) {
-            caseDisponibili = caseRepository.findAll(); 
-        } else {
-            caseDisponibili = caseRepository.findAll().stream()
-                    .filter(c -> !caseOccupate.contains(c.getId()))
-                    .collect(Collectors.toList());
-        }
+            .collect(Collectors.toSet());
+
+        List<Case> caseDisponibili = caseRepository.findAll().stream()
+            .filter(c -> !caseOccupate.contains(c.getId()))
+            .filter(c -> ospiti == null || ospiti <= 0 || (c.getMax_ospiti() != null && c.getMax_ospiti() >= ospiti))
+            .collect(Collectors.toList());
+
         // Calcola il prezzo totale per ogni casa disponibile
         return caseDisponibili.stream()
                 .map(casa -> new CasaDisponibileDTO(

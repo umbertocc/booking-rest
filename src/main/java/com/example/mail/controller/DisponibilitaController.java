@@ -21,7 +21,8 @@ public class DisponibilitaController {
     @GetMapping("/case")
     public List<CasaDisponibileDTO> getCaseDisponibili(
             @RequestParam("checkIn") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkIn,
-            @RequestParam("checkOut") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOut) {
-        return disponibilitaService.getCaseDisponibili(checkIn, checkOut);
+            @RequestParam("checkOut") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOut,
+            @RequestParam(value = "ospiti", required = false) Integer ospiti) {
+        return disponibilitaService.getCaseDisponibili(checkIn, checkOut, ospiti);
     }
 }
