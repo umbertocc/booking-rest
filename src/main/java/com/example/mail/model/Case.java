@@ -21,6 +21,7 @@ public class Case {
     private String link_whatsapp;
     private String cin;
     private String cis;
+    private Integer max_ospiti;
 
     private String email;
     private String password;
@@ -40,6 +41,9 @@ public class Case {
 
     public String getCis() { return cis; }
     public void setCis(String cis) { this.cis = cis; }
+
+    public Integer getMax_ospiti() { return max_ospiti; }
+    public void setMax_ospiti(Integer max_ospiti) { this.max_ospiti = max_ospiti; }
 
     public String getImmagine() { return immagine; }
     public void setImmagine(String immagine) { this.immagine = immagine; }
