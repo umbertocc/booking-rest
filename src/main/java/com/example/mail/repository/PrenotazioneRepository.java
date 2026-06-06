@@ -16,4 +16,7 @@ public interface PrenotazioneRepository extends JpaRepository<Prenotazione, UUID
     List<Prenotazione> findPrenotazioniConflitto(@Param("casaId") Long casaId, @Param("dataInizio") LocalDate dataInizio, @Param("dataFine") LocalDate dataFine);
     @Query("SELECT p FROM Prenotazione p WHERE p.checkIn < :dataFine AND p.checkOut > :dataInizio")
     List<Prenotazione> findPrenotazioniConflittoPerTutteLeCase(@Param("dataInizio") LocalDate dataInizio, @Param("dataFine") LocalDate dataFine);
+
+    @Query("SELECT CASE WHEN COUNT(p) > 0 THEN true ELSE false END FROM Prenotazione p WHERE p.casaId = :casaId AND p.checkIn < :dataFine AND p.checkOut > :dataInizio")
+    boolean existsConflitto(@Param("casaId") Long casaId, @Param("dataInizio") LocalDate dataInizio, @Param("dataFine") LocalDate dataFine);
 }
