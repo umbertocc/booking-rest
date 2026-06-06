@@ -48,6 +48,7 @@ public class AdminPrenotazioniService {
             p.setCheckOut(dto.getCheckOut());
             p.setEmailOspite(dto.getEmailOspite());
             p.setTelefonoOspite(dto.getTelefonoOspite());
+            p.setNumOspiti(dto.getNumOspiti());
             p.setPrezzoTotale(dto.getPrezzoTotale());
             p.setCaparra(dto.getCaparra());
             p.setNote(dto.getNote());
@@ -61,6 +62,7 @@ public class AdminPrenotazioniService {
             out.setEmailOspite(p.getEmailOspite());
             out.setNote(p.getNote());
             out.setTelefonoOspite(p.getTelefonoOspite());
+            out.setNumOspiti(p.getNumOspiti());
             out.setPrezzoTotale(p.getPrezzoTotale());
             out.setCaparra(p.getCaparra());
             out.setCreatedAt(p.getCreatedAt());
@@ -88,6 +90,7 @@ public class AdminPrenotazioniService {
         p.setCheckOut(dto.getCheckOut());
         p.setEmailOspite(dto.getEmailOspite());
         p.setTelefonoOspite(dto.getTelefonoOspite());
+        p.setNumOspiti(dto.getNumOspiti());
         p.setPrezzoTotale(dto.getPrezzoTotale());
         p.setCaparra(dto.getCaparra());
         p.setNote(dto.getNote());
@@ -101,6 +104,7 @@ public class AdminPrenotazioniService {
         out.setCheckOut(p.getCheckOut());
         out.setEmailOspite(p.getEmailOspite());
         out.setTelefonoOspite(p.getTelefonoOspite());
+        out.setNumOspiti(p.getNumOspiti());
         out.setPrezzoTotale(p.getPrezzoTotale());
         out.setCaparra(p.getCaparra());
         out.setNote(p.getNote());

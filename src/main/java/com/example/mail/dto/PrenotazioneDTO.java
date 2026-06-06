@@ -15,6 +15,7 @@ public class PrenotazioneDTO {
 	private String emailOspite;
 	private String note;
 	private String telefonoOspite;
+	private Integer numOspiti;
 	private BigDecimal prezzoTotale;
 	private BigDecimal caparra;
 	private OffsetDateTime createdAt;
@@ -44,6 +45,9 @@ public class PrenotazioneDTO {
 
 	public String getTelefonoOspite() { return telefonoOspite; }
 	public void setTelefonoOspite(String telefonoOspite) { this.telefonoOspite = telefonoOspite; }
+
+	public Integer getNumOspiti() { return numOspiti; }
+	public void setNumOspiti(Integer numOspiti) { this.numOspiti = numOspiti; }
 
 	public BigDecimal getPrezzoTotale() { return prezzoTotale; }
 	public void setPrezzoTotale(BigDecimal prezzoTotale) { this.prezzoTotale = prezzoTotale; }

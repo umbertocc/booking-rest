@@ -31,6 +31,9 @@ public class Prenotazione {
     @Column(name = "telefono_ospite")
     private String telefonoOspite;
 
+    @Column(name = "num_ospiti")
+    private Integer numOspiti;
+
     @Column(name = "prezzo_totale")
     private BigDecimal prezzoTotale;
 
@@ -65,6 +68,9 @@ public class Prenotazione {
 
     public String getTelefonoOspite() { return telefonoOspite; }
     public void setTelefonoOspite(String telefonoOspite) { this.telefonoOspite = telefonoOspite; }
+
+    public Integer getNumOspiti() { return numOspiti; }
+    public void setNumOspiti(Integer numOspiti) { this.numOspiti = numOspiti; }
 
     public BigDecimal getPrezzoTotale() { return prezzoTotale; }
     public void setPrezzoTotale(BigDecimal prezzoTotale) { this.prezzoTotale = prezzoTotale; }
