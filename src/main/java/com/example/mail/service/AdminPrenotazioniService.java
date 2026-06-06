@@ -60,6 +60,7 @@ public class AdminPrenotazioniService {
             p.setEmailOspite(dto.getEmailOspite());
             p.setTelefonoOspite(dto.getTelefonoOspite());
             p.setNumOspiti(dto.getNumOspiti());
+            p.setStato(dto.getStato());
             p.setPrezzoTotale(dto.getPrezzoTotale());
             p.setCaparra(dto.getCaparra());
             p.setNote(dto.getNote());
@@ -74,6 +75,7 @@ public class AdminPrenotazioniService {
             out.setNote(p.getNote());
             out.setTelefonoOspite(p.getTelefonoOspite());
             out.setNumOspiti(p.getNumOspiti());
+            out.setStato(p.getStato());
             out.setPrezzoTotale(p.getPrezzoTotale());
             out.setCaparra(p.getCaparra());
             out.setCreatedAt(p.getCreatedAt());
@@ -102,6 +104,7 @@ public class AdminPrenotazioniService {
         p.setEmailOspite(dto.getEmailOspite());
         p.setTelefonoOspite(dto.getTelefonoOspite());
         p.setNumOspiti(dto.getNumOspiti());
+        p.setStato(dto.getStato());
         p.setPrezzoTotale(dto.getPrezzoTotale());
         p.setCaparra(dto.getCaparra());
         p.setNote(dto.getNote());
@@ -116,6 +119,7 @@ public class AdminPrenotazioniService {
         out.setEmailOspite(p.getEmailOspite());
         out.setTelefonoOspite(p.getTelefonoOspite());
         out.setNumOspiti(p.getNumOspiti());
+        out.setStato(p.getStato());
         out.setPrezzoTotale(p.getPrezzoTotale());
         out.setCaparra(p.getCaparra());
         out.setNote(p.getNote());
@@ -148,6 +152,7 @@ public class AdminPrenotazioniService {
         prenotazione.setEmailOspite(dto.getEmailOspite());
         prenotazione.setTelefonoOspite(dto.getTelefonoOspite());
         prenotazione.setNumOspiti(dto.getNumOspiti());
+        prenotazione.setStato((dto.getStato() == null || dto.getStato().isBlank()) ? "in_attesa" : dto.getStato());
         prenotazione.setPrezzoTotale(prezzoTotaleCalcolato);
         prenotazione.setCaparra(dto.getCaparra());
         prenotazione.setNote(dto.getNote());
@@ -210,6 +215,7 @@ public class AdminPrenotazioniService {
         out.setEmailOspite(prenotazione.getEmailOspite());
         out.setTelefonoOspite(prenotazione.getTelefonoOspite());
         out.setNumOspiti(prenotazione.getNumOspiti());
+        out.setStato(prenotazione.getStato());
         out.setPrezzoTotale(prenotazione.getPrezzoTotale());
         out.setCaparra(prenotazione.getCaparra());
         out.setNote(prenotazione.getNote());

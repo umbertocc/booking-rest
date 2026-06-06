@@ -44,6 +44,7 @@ public class AdminPrenotazioniController {
                 m.put("note", p.getNote());
                 m.put("telefonoOspite", p.getTelefonoOspite());
                 m.put("numOspiti", p.getNumOspiti());
+                m.put("stato", p.getStato());
                 m.put("prezzoTotale", p.getPrezzoTotale());
                 m.put("caparra", p.getCaparra());
                 m.put("createdAt", p.getCreatedAt());
