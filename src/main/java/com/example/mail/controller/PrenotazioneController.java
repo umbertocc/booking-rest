@@ -13,6 +13,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
@@ -54,6 +55,17 @@ public class PrenotazioneController {
         try {
             PrenotazioneDTO created = adminPrenotazioniService.createPrenotazionePublicSecure(dto);
             return ResponseEntity.status(201).body(created);
+        } catch (AdminPrenotazioniService.PublicBookingException ex) {
+            return ResponseEntity.status(ex.getStatus()).body(ex.getMessage());
+        }
+    }
+
+    @GetMapping("/public/{prenotazioneId}/payment-session")
+    public ResponseEntity<?> getPublicPaymentSession(@PathVariable UUID prenotazioneId) {
+        try {
+            AdminPrenotazioniService.PublicPaymentSessionResponse response =
+                    adminPrenotazioniService.createPublicPaymentSession(prenotazioneId);
+            return ResponseEntity.ok(response);
         } catch (AdminPrenotazioniService.PublicBookingException ex) {
             return ResponseEntity.status(ex.getStatus()).body(ex.getMessage());
         }

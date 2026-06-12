@@ -11,24 +11,32 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class AdminPrenotazioniService {
+    private static final BigDecimal CAPARRA_PERCENTUALE = new BigDecimal("0.30");
+    private static final String STATO_IN_ATTESA_CAPARRA = "IN_ATTESA_CAPARRA";
+
     private final PrenotazioneRepository prenotazioneRepository;
     private final CaseRepository caseRepository;
     private final PrezzoCasaRepository prezzoCasaRepository;
+    private final StripePaymentService stripePaymentService;
 
     public AdminPrenotazioniService(
             PrenotazioneRepository prenotazioneRepository,
             CaseRepository caseRepository,
-            PrezzoCasaRepository prezzoCasaRepository
+            PrezzoCasaRepository prezzoCasaRepository,
+            StripePaymentService stripePaymentService
     ) {
         this.prenotazioneRepository = prenotazioneRepository;
         this.caseRepository = caseRepository;
         this.prezzoCasaRepository = prezzoCasaRepository;
+        this.stripePaymentService = stripePaymentService;
     }
 
     public Map<Case, List<Prenotazione>> getPrenotazioniPerCasa() {
@@ -152,11 +160,11 @@ public class AdminPrenotazioniService {
         prenotazione.setEmailOspite(dto.getEmailOspite());
         prenotazione.setTelefonoOspite(dto.getTelefonoOspite());
         prenotazione.setNumOspiti(dto.getNumOspiti());
-        prenotazione.setStato((dto.getStato() == null || dto.getStato().isBlank()) ? "in_attesa" : dto.getStato());
+        prenotazione.setStato(STATO_IN_ATTESA_CAPARRA);
         prenotazione.setPrezzoTotale(prezzoTotaleCalcolato);
-        prenotazione.setCaparra(dto.getCaparra());
+        prenotazione.setCaparra(calcolaCaparraServerSide(prezzoTotaleCalcolato));
         prenotazione.setNote(dto.getNote());
-        prenotazione.setCreatedAt(dto.getCreatedAt() != null ? dto.getCreatedAt() : java.time.OffsetDateTime.now());
+        prenotazione.setCreatedAt(dto.getCreatedAt() != null ? dto.getCreatedAt() : OffsetDateTime.now());
         prenotazione.setCasaId(dto.getCasaId());
 
         prenotazioneRepository.save(prenotazione);
@@ -206,6 +214,30 @@ public class AdminPrenotazioniService {
         return totale;
     }
 
+    private BigDecimal calcolaCaparraServerSide(BigDecimal prezzoTotale) {
+        return prezzoTotale.multiply(CAPARRA_PERCENTUALE).setScale(2, RoundingMode.HALF_UP);
+    }
+
+    public PublicPaymentSessionResponse createPublicPaymentSession(UUID prenotazioneId) {
+        Prenotazione prenotazione = prenotazioneRepository.findById(prenotazioneId)
+                .orElseThrow(() -> new PublicBookingException(HttpStatus.NOT_FOUND, "Prenotazione non trovata"));
+
+        if (prenotazione.getCaparra() == null) {
+            throw new PublicBookingException(HttpStatus.BAD_REQUEST, "Caparra non disponibile per la prenotazione");
+        }
+
+        StripePaymentService.StripeCheckoutSession checkoutSession =
+            stripePaymentService.createCheckoutSession(prenotazione);
+
+        return new PublicPaymentSessionResponse(
+                prenotazione.getId(),
+                prenotazione.getCaparra(),
+            checkoutSession.getSessionId(),
+            checkoutSession.getSessionUrl(),
+            STATO_IN_ATTESA_CAPARRA
+        );
+    }
+
     private PrenotazioneDTO toDto(Prenotazione prenotazione) {
         PrenotazioneDTO out = new PrenotazioneDTO();
         out.setId(prenotazione.getId());
@@ -234,6 +266,48 @@ public class AdminPrenotazioniService {
 
         public HttpStatus getStatus() {
             return status;
+        }
+    }
+
+    public static class PublicPaymentSessionResponse {
+        private final UUID prenotazioneId;
+        private final BigDecimal importoCaparra;
+        private final String paymentSessionId;
+        private final String paymentUrl;
+        private final String stato;
+
+        public PublicPaymentSessionResponse(
+                UUID prenotazioneId,
+                BigDecimal importoCaparra,
+                String paymentSessionId,
+                String paymentUrl,
+                String stato
+        ) {
+            this.prenotazioneId = prenotazioneId;
+            this.importoCaparra = importoCaparra;
+            this.paymentSessionId = paymentSessionId;
+            this.paymentUrl = paymentUrl;
+            this.stato = stato;
+        }
+
+        public UUID getPrenotazioneId() {
+            return prenotazioneId;
+        }
+
+        public BigDecimal getImportoCaparra() {
+            return importoCaparra;
+        }
+
+        public String getPaymentSessionId() {
+            return paymentSessionId;
+        }
+
+        public String getPaymentUrl() {
+            return paymentUrl;
+        }
+
+        public String getStato() {
+            return stato;
         }
     }
 }
