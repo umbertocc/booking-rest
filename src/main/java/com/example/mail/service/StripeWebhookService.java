@@ -1,0 +1,112 @@
+package com.example.mail.service;
+
+import com.example.mail.EmailService;
+import com.example.mail.model.Prenotazione;
+import com.example.mail.repository.PrenotazioneRepository;
+import com.stripe.exception.SignatureVerificationException;
+import com.stripe.model.Event;
+import com.stripe.model.checkout.Session;
+import com.stripe.net.Webhook;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
+import java.util.UUID;
+
+@Service
+public class StripeWebhookService {
+    private static final String CHECKOUT_SESSION_COMPLETED = "checkout.session.completed";
+    private static final String STATO_CAPARRA_PAGATA = "CAPARRA_PAGATA";
+
+    private final PrenotazioneRepository prenotazioneRepository;
+    private final EmailService emailService;
+
+    @Value("${stripe.webhook-secret:}")
+    private String webhookSecret;
+
+    @Value("${stripe.notification-email:info@torrepalivacanze.it}")
+    private String notificationEmail;
+
+    public StripeWebhookService(PrenotazioneRepository prenotazioneRepository, EmailService emailService) {
+        this.prenotazioneRepository = prenotazioneRepository;
+        this.emailService = emailService;
+    }
+
+    @Transactional
+    public String handleCheckoutSessionCompleted(String payload, String signatureHeader) throws SignatureVerificationException {
+        if (webhookSecret == null || webhookSecret.isBlank()) {
+            throw new IllegalStateException("Stripe webhook non configurato");
+        }
+
+        Event event = Webhook.constructEvent(payload, signatureHeader, webhookSecret);
+        if (!CHECKOUT_SESSION_COMPLETED.equals(event.getType())) {
+            return "ignored:" + event.getType();
+        }
+
+        Session session = event.getDataObjectDeserializer()
+                .getObject()
+                .map(obj -> (Session) obj)
+                .orElseThrow(() -> new IllegalStateException("Sessione Stripe non disponibile nel webhook"));
+
+        String prenotazioneIdValue = session.getMetadata() != null ? session.getMetadata().get("prenotazioneId") : null;
+        if (prenotazioneIdValue == null || prenotazioneIdValue.isBlank()) {
+            throw new IllegalStateException("prenotazioneId mancante nei metadata Stripe");
+        }
+
+        UUID prenotazioneId = UUID.fromString(prenotazioneIdValue);
+        Prenotazione prenotazione = prenotazioneRepository.findById(prenotazioneId)
+                .orElseThrow(() -> new IllegalStateException("Prenotazione non trovata"));
+
+        if (STATO_CAPARRA_PAGATA.equalsIgnoreCase(prenotazione.getStato())) {
+            return "already-processed";
+        }
+
+        prenotazione.setStato(STATO_CAPARRA_PAGATA);
+        prenotazioneRepository.save(prenotazione);
+
+        emailService.sendSimpleMessage(
+                notificationEmail,
+                "Pagamento Stripe ricevuto - prenotazione " + prenotazione.getId(),
+                buildNotificationBody(prenotazione, session)
+        );
+
+        return "processed";
+    }
+
+    private String buildNotificationBody(Prenotazione prenotazione, Session session) {
+        StringBuilder body = new StringBuilder();
+        body.append("È stato ricevuto un pagamento Stripe per una prenotazione.\n\n");
+        body.append("Prenotazione ID: ").append(prenotazione.getId()).append('\n');
+        body.append("Casa ID: ").append(prenotazione.getCasaId()).append('\n');
+        body.append("Ospite: ").append(valueOrEmpty(prenotazione.getOspiteNome())).append('\n');
+        body.append("Email ospite: ").append(valueOrEmpty(prenotazione.getEmailOspite())).append('\n');
+        body.append("Telefono ospite: ").append(valueOrEmpty(prenotazione.getTelefonoOspite())).append('\n');
+        body.append("Check-in: ").append(prenotazione.getCheckIn()).append('\n');
+        body.append("Check-out: ").append(prenotazione.getCheckOut()).append('\n');
+        body.append("Stato: ").append(valueOrEmpty(prenotazione.getStato())).append('\n');
+        body.append("Prezzo totale: ").append(formatMoney(prenotazione.getPrezzoTotale())).append('\n');
+        body.append("Caparra: ").append(formatMoney(prenotazione.getCaparra())).append('\n');
+        body.append("Stripe session: ").append(valueOrEmpty(session.getId())).append('\n');
+        body.append("Payment intent: ").append(valueOrEmpty(session.getPaymentIntent())).append('\n');
+        if (session.getCreated() != null) {
+            body.append("Pagato il: ")
+                    .append(DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(Instant.ofEpochSecond(session.getCreated()).atOffset(java.time.ZoneOffset.UTC)))
+                    .append('\n');
+        }
+        return body.toString();
+    }
+
+    private String valueOrEmpty(String value) {
+        return value == null ? "" : value;
+    }
+
+    private String formatMoney(BigDecimal value) {
+        if (value == null) {
+            return "";
+        }
+        return value.setScale(2, java.math.RoundingMode.HALF_UP).toPlainString() + " EUR";
+    }
+}
