@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class AdminPrenotazioniService {
-    private static final BigDecimal CAPARRA_PERCENTUALE = new BigDecimal("0.30");
+    private static final BigDecimal CAPARRA_PERCENTUALE = new BigDecimal("0.20");
     private static final String STATO_IN_ATTESA_CAPARRA = "IN_ATTESA_CAPARRA";
 
     private final PrenotazioneRepository prenotazioneRepository;
