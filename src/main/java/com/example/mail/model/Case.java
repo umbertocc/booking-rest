@@ -19,6 +19,7 @@ public class Case {
     private String immagine;
     private String link_dettaglio;
     private String link_whatsapp;
+    private String indirizzo;
     private String cin;
     private String cis;
     private Integer max_ospiti;
@@ -35,6 +36,9 @@ public class Case {
 
     public String getLink_whatsapp() { return link_whatsapp; }
     public void setLink_whatsapp(String link_whatsapp) { this.link_whatsapp = link_whatsapp; }
+
+    public String getIndirizzo() { return indirizzo; }
+    public void setIndirizzo(String indirizzo) { this.indirizzo = indirizzo; }
 
     public String getCin() { return cin; }
     public void setCin(String cin) { this.cin = cin; }

@@ -1,8 +1,10 @@
 package com.example.mail.service;
 
 import com.example.mail.EmailService;
+import com.example.mail.model.Case;
 import com.example.mail.model.Prenotazione;
 import com.example.mail.repository.PrenotazioneRepository;
+import com.example.mail.repository.CaseRepository;
 import com.stripe.exception.EventDataObjectDeserializationException;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.model.Event;
@@ -27,9 +29,10 @@ public class StripeWebhookService {
     private static final String CHECKOUT_SESSION_COMPLETED = "checkout.session.completed";
     private static final String STATO_CAPARRA_PAGATA = "CAPARRA_PAGATA";
     private static final String ADMIN_SUBJECT_PREFIX = "Pagamento Stripe ricevuto - prenotazione ";
-    private static final String GUEST_SUBJECT = "Conferma pagamento caparra - Torre Pali Vacanze";
+    private static final String GUEST_SUBJECT = "Conferma prenotazione ricevuta - Torre Pali Vacanze";
 
     private final PrenotazioneRepository prenotazioneRepository;
+    private final CaseRepository caseRepository;
     private final EmailService emailService;
 
     @Value("${stripe.webhook-secret:}")
@@ -44,8 +47,9 @@ public class StripeWebhookService {
     @Value("${stripe.use-test-mode:false}")
     private boolean useTestMode;
 
-    public StripeWebhookService(PrenotazioneRepository prenotazioneRepository, EmailService emailService) {
+    public StripeWebhookService(PrenotazioneRepository prenotazioneRepository, CaseRepository caseRepository, EmailService emailService) {
         this.prenotazioneRepository = prenotazioneRepository;
+        this.caseRepository = caseRepository;
         this.emailService = emailService;
     }
 
@@ -79,7 +83,8 @@ public class StripeWebhookService {
             return "already-processed";
         }
 
-        sendNotifications(prenotazione, session);
+        Case casa = caseRepository.findById(prenotazione.getCasaId()).orElse(null);
+        sendNotifications(prenotazione, casa, session);
 
         prenotazione.setStato(STATO_CAPARRA_PAGATA);
         prenotazioneRepository.save(prenotazione);
@@ -88,7 +93,7 @@ public class StripeWebhookService {
         return "processed";
     }
 
-    private void sendNotifications(Prenotazione prenotazione, Session session) {
+    private void sendNotifications(Prenotazione prenotazione, Case casa, Session session) {
         emailService.sendSimpleMessage(
                 notificationEmail,
                 ADMIN_SUBJECT_PREFIX + prenotazione.getId(),
@@ -100,7 +105,7 @@ public class StripeWebhookService {
             emailService.sendSimpleMessage(
                     guestEmail,
                     GUEST_SUBJECT,
-                    buildGuestConfirmationBody(prenotazione, session)
+                    buildGuestConfirmationBody(prenotazione, casa, session)
             );
         }
     }
@@ -160,18 +165,23 @@ public class StripeWebhookService {
         return body.toString();
     }
 
-    private String buildGuestConfirmationBody(Prenotazione prenotazione, Session session) {
+    private String buildGuestConfirmationBody(Prenotazione prenotazione, Case casa, Session session) {
         StringBuilder body = new StringBuilder();
         body.append("Ciao ").append(valueOrEmpty(prenotazione.getOspiteNome())).append(",\n\n");
-        body.append("abbiamo ricevuto correttamente il pagamento della caparra per la tua prenotazione.\n\n");
-        body.append("Dettagli:\n");
-        body.append("- Prenotazione ID: ").append(prenotazione.getId()).append('\n');
+        body.append("abbiamo ricevuto il pagamento della caparra e la tua prenotazione è stata presa in carico.\n\n");
+        body.append("Riepilogo soggiorno:\n");
         body.append("- Check-in: ").append(prenotazione.getCheckIn()).append('\n');
         body.append("- Check-out: ").append(prenotazione.getCheckOut()).append('\n');
-        body.append("- Caparra pagata: ").append(formatMoney(prenotazione.getCaparra())).append('\n');
-        body.append("- Sessione Stripe: ").append(valueOrEmpty(session.getId())).append('\n');
-        body.append("\nGrazie per aver scelto Torre Pali Vacanze.\n");
-        body.append("Per assistenza rispondi a questa email o contattaci al +39 388 658 70 80.");
+        body.append("- Importo caparra: ").append(formatMoney(prenotazione.getCaparra())).append('\n');
+        if (casa != null) {
+            body.append("- Indirizzo: ").append(valueOrEmpty(casa.getIndirizzo())).append('\n');
+            if (casa.getLink_dettaglio() != null && !casa.getLink_dettaglio().isBlank()) {
+                body.append("- Dettagli casa: ").append(casa.getLink_dettaglio()).append('\n');
+            }
+        }
+        body.append("\nTi invieremo a breve tutte le informazioni utili per il soggiorno.\n");
+        body.append("Grazie per aver scelto Torre Pali Vacanze.\n\n");
+        body.append("Per qualsiasi esigenza puoi rispondere a questa email oppure contattarci al +39 388 658 70 80.");
         return body.toString();
     }
 
