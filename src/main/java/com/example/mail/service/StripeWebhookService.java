@@ -27,8 +27,14 @@ public class StripeWebhookService {
     @Value("${stripe.webhook-secret:}")
     private String webhookSecret;
 
+    @Value("${stripe.webhook-secret-test:}")
+    private String webhookSecretTest;
+
     @Value("${stripe.notification-email:info@torrepalivacanze.it}")
     private String notificationEmail;
+
+    @Value("${stripe.use-test-mode:false}")
+    private boolean useTestMode;
 
     public StripeWebhookService(PrenotazioneRepository prenotazioneRepository, EmailService emailService) {
         this.prenotazioneRepository = prenotazioneRepository;
@@ -37,11 +43,12 @@ public class StripeWebhookService {
 
     @Transactional
     public String handleCheckoutSessionCompleted(String payload, String signatureHeader) throws SignatureVerificationException {
-        if (webhookSecret == null || webhookSecret.isBlank()) {
+        String secret = getActiveWebhookSecret();
+        if (secret == null || secret.isBlank()) {
             throw new IllegalStateException("Stripe webhook non configurato");
         }
 
-        Event event = Webhook.constructEvent(payload, signatureHeader, webhookSecret);
+        Event event = Webhook.constructEvent(payload, signatureHeader, secret);
         if (!CHECKOUT_SESSION_COMPLETED.equals(event.getType())) {
             return "ignored:" + event.getType();
         }
@@ -74,6 +81,13 @@ public class StripeWebhookService {
         );
 
         return "processed";
+    }
+
+    private String getActiveWebhookSecret() {
+        if (useTestMode && webhookSecretTest != null && !webhookSecretTest.isBlank()) {
+            return webhookSecretTest;
+        }
+        return webhookSecret;
     }
 
     private String buildNotificationBody(Prenotazione prenotazione, Session session) {
