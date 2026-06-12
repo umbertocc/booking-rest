@@ -16,14 +16,21 @@ public class StripePaymentService {
     @Value("${stripe.secret-key:}")
     private String stripeSecretKey;
 
+    @Value("${stripe.secret-key-test:}")
+    private String stripeSecretKeyTest;
+
+    @Value("${stripe.use-test-mode:false}")
+    private boolean useTestMode;
+
     @Value("${stripe.success-url:http://localhost:3000/payment/success}")
     private String successUrl;
-
+ 
     @Value("${stripe.cancel-url:http://localhost:3000/payment/cancel}")
     private String cancelUrl;
 
     public StripeCheckoutSession createCheckoutSession(Prenotazione prenotazione) {
-        if (stripeSecretKey == null || stripeSecretKey.isBlank()) {
+        String activeSecretKey = getActiveSecretKey();
+        if (activeSecretKey == null || activeSecretKey.isBlank()) {
             throw new AdminPrenotazioniService.PublicBookingException(
                     org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE,
                     "Stripe non configurato sul server"
@@ -31,7 +38,7 @@ public class StripePaymentService {
         }
 
         try {
-            Stripe.apiKey = stripeSecretKey;
+            Stripe.apiKey = activeSecretKey;
 
             long amountInCents = prenotazione.getCaparra()
                     .multiply(BigDecimal.valueOf(100))
@@ -69,6 +76,13 @@ public class StripePaymentService {
                     "Errore creazione sessione pagamento"
             );
         }
+    }
+
+    private String getActiveSecretKey() {
+        if (useTestMode && stripeSecretKeyTest != null && !stripeSecretKeyTest.isBlank()) {
+            return stripeSecretKeyTest;
+        }
+        return stripeSecretKey;
     }
 
     public static class StripeCheckoutSession {
