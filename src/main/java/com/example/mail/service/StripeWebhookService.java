@@ -179,7 +179,11 @@ public class StripeWebhookService {
                 body.append("- Dettagli casa: ").append(casa.getLink_dettaglio()).append('\n');
             }
         }
-        body.append("\nTi invieremo a breve tutte le informazioni utili per il soggiorno.\n");
+        body.append("\nOrari di arrivo e partenza:\n");
+        body.append("- Check-in: dalle 15:00 alle 20:00\n");
+        body.append("- Check-out: entro le 10:00\n");
+        body.append("Per check-in anticipati o tardivi contattaci.\n");
+        body.append("\nAl vostro arrivo saremo presenti in struttura per accogliervi e supportarvi.\n");
         body.append("Grazie per aver scelto Torre Pali Vacanze.\n\n");
         body.append("Per qualsiasi esigenza puoi rispondere a questa email oppure contattarci al +39 388 658 70 80.");
         return body.toString();
