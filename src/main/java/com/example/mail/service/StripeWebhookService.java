@@ -3,10 +3,13 @@ package com.example.mail.service;
 import com.example.mail.EmailService;
 import com.example.mail.model.Prenotazione;
 import com.example.mail.repository.PrenotazioneRepository;
+import com.stripe.exception.EventDataObjectDeserializationException;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.model.Event;
+import com.stripe.model.StripeObject;
 import com.stripe.model.checkout.Session;
 import com.stripe.net.Webhook;
+import com.stripe.model.EventDataObjectDeserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,10 +63,7 @@ public class StripeWebhookService {
             return "ignored:" + event.getType();
         }
 
-        Session session = event.getDataObjectDeserializer()
-                .getObject()
-                .map(obj -> (Session) obj)
-                .orElseThrow(() -> new IllegalStateException("Sessione Stripe non disponibile nel webhook"));
+        Session session = extractSession(event);
 
         String prenotazioneIdValue = session.getMetadata() != null ? session.getMetadata().get("prenotazioneId") : null;
         if (prenotazioneIdValue == null || prenotazioneIdValue.isBlank()) {
@@ -110,6 +110,31 @@ public class StripeWebhookService {
             return webhookSecretTest;
         }
         return webhookSecret;
+    }
+
+    private Session extractSession(Event event) {
+        EventDataObjectDeserializer deserializer = event.getDataObjectDeserializer();
+
+        // First try safe deserialization (preferred when API versions match).
+        Session safeSession = deserializer.getObject()
+                .filter(Session.class::isInstance)
+                .map(Session.class::cast)
+                .orElse(null);
+        if (safeSession != null) {
+            return safeSession;
+        }
+
+        // Fallback for API version mismatches between Stripe account and stripe-java models.
+        try {
+            StripeObject unsafe = deserializer.deserializeUnsafe();
+            if (unsafe instanceof Session) {
+                log.warn("Webhook Stripe deserializzato in modalita unsafe (eventId={}, type={})", event.getId(), event.getType());
+                return (Session) unsafe;
+            }
+            throw new IllegalStateException("Oggetto webhook non e una Sessione checkout");
+        } catch (EventDataObjectDeserializationException | RuntimeException ex) {
+            throw new IllegalStateException("Sessione Stripe non disponibile nel webhook", ex);
+        }
     }
 
     private String buildNotificationBody(Prenotazione prenotazione, Session session) {
