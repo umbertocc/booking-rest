@@ -33,7 +33,7 @@ public class StripeWebhookService {
 
     private final PrenotazioneRepository prenotazioneRepository;
     private final CaseRepository caseRepository;
-    private final EmailService emailService;
+    private final EmailService emailService; 
 
     @Value("${stripe.webhook-secret:}")
     private String webhookSecret;
