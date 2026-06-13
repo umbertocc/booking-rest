@@ -144,6 +144,8 @@ public class StripeWebhookService {
 
     private String buildNotificationBody(Prenotazione prenotazione, Session session) {
         StringBuilder body = new StringBuilder();
+        BigDecimal importoTotale = prenotazione.getPrezzoTotale();
+        BigDecimal importoCaparra = prenotazione.getCaparra();
         body.append("È stato ricevuto un pagamento Stripe per una prenotazione.\n\n");
         body.append("Prenotazione ID: ").append(prenotazione.getId()).append('\n');
         body.append("Casa ID: ").append(prenotazione.getCasaId()).append('\n');
@@ -153,8 +155,8 @@ public class StripeWebhookService {
         body.append("Check-in: ").append(prenotazione.getCheckIn()).append('\n');
         body.append("Check-out: ").append(prenotazione.getCheckOut()).append('\n');
         body.append("Stato: ").append(valueOrEmpty(prenotazione.getStato())).append('\n');
-        body.append("Prezzo totale: ").append(formatMoney(prenotazione.getPrezzoTotale())).append('\n');
-        body.append("Caparra: ").append(formatMoney(prenotazione.getCaparra())).append('\n');
+        body.append("Totale soggiorno: ").append(formatMoney(importoTotale)).append('\n');
+        body.append("Importo caparra: ").append(formatMoney(importoCaparra)).append('\n');
         body.append("Stripe session: ").append(valueOrEmpty(session.getId())).append('\n');
         body.append("Payment intent: ").append(valueOrEmpty(session.getPaymentIntent())).append('\n');
         if (session.getCreated() != null) {
@@ -167,12 +169,15 @@ public class StripeWebhookService {
 
     private String buildGuestConfirmationBody(Prenotazione prenotazione, Case casa, Session session) {
         StringBuilder body = new StringBuilder();
+        BigDecimal importoTotale = prenotazione.getPrezzoTotale();
+        BigDecimal importoCaparra = prenotazione.getCaparra();
         body.append("Ciao ").append(valueOrEmpty(prenotazione.getOspiteNome())).append(",\n\n");
         body.append("abbiamo ricevuto il pagamento della caparra e la tua prenotazione è stata presa in carico.\n\n");
         body.append("Riepilogo soggiorno:\n");
         body.append("- Check-in: ").append(prenotazione.getCheckIn()).append('\n');
         body.append("- Check-out: ").append(prenotazione.getCheckOut()).append('\n');
-        body.append("- Importo caparra: ").append(formatMoney(prenotazione.getCaparra())).append('\n');
+        body.append("- Totale soggiorno: ").append(formatMoney(importoTotale)).append('\n');
+        body.append("- Importo caparra: ").append(formatMoney(importoCaparra)).append('\n');
         if (casa != null) {
             body.append("- Indirizzo: ").append(valueOrEmpty(casa.getIndirizzo())).append('\n');
             if (casa.getLink_dettaglio() != null && !casa.getLink_dettaglio().isBlank()) {
