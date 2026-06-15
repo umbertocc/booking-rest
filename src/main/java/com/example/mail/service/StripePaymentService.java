@@ -45,9 +45,11 @@ public class StripePaymentService {
                     .setScale(0, RoundingMode.HALF_UP)
                     .longValueExact();
 
+            double caparraValore = prenotazione.getCaparra().doubleValue();
+
             SessionCreateParams params = SessionCreateParams.builder()
                     .setMode(SessionCreateParams.Mode.PAYMENT)
-                    .setSuccessUrl(successUrl + "?session_id={CHECKOUT_SESSION_ID}")
+                    .setSuccessUrl(successUrl + "?session_id={CHECKOUT_SESSION_ID}&valore=" + caparraValore)
                     .setCancelUrl(cancelUrl)
                     .putMetadata("prenotazioneId", prenotazione.getId().toString())
                     .addLineItem(
