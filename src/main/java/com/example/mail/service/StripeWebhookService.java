@@ -166,7 +166,7 @@ public class StripeWebhookService {
         }
         return body.toString();
     }
-
+ 
     private String buildGuestConfirmationBody(Prenotazione prenotazione, Case casa, Session session) {
         StringBuilder body = new StringBuilder();
         BigDecimal importoTotale = prenotazione.getPrezzoTotale();
