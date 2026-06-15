@@ -188,8 +188,22 @@ public class StripeWebhookService {
         body.append("- Check-in: dalle 15:00 alle 20:00\n");
         body.append("- Check-out: entro le 10:00\n");
         body.append("Per check-in anticipati o tardivi contattaci.\n");
-        body.append("\nAl vostro arrivo saremo presenti in struttura per accogliervi e supportarvi.\n");
-        body.append("Grazie per aver scelto Torre Pali Vacanze.\n\n");
+        body.append("\nCosa succede al vostro arrivo:\n");
+        body.append("- Vi consegneremo le chiavi dell'appartamento\n");
+        body.append("- Vi forniremo il pass per il parcheggio\n");
+        body.append("- Vi daremo tutte le indicazioni per l'utilizzo del condizionatore e della TV\n");
+        body.append("- Saremo presenti in struttura per accogliervi e rispondere a qualsiasi domanda\n");
+        body.append("\nSaldo residuo:\n");
+        body.append("Il saldo del soggiorno (").append(formatMoney(importoTotale != null && importoCaparra != null ? importoTotale.subtract(importoCaparra) : null)).append(") verrà corrisposto al momento del check-in.\n");
+        body.append("\nInfo utili per il soggiorno:\n");
+        body.append("- In caso di guasti o emergenze durante il soggiorno, contattateci al +39 388 658 70 80\n");
+        body.append("- Raccolta differenziata: all'arrivo vi illustreremo giorni e modalità di raccolta previste dal comune\n");
+        body.append("- Vi chiediamo di rispettare il silenzio nelle ore notturne (22:00 - 08:00)\n");
+        body.append("\nIstruzioni check-out:\n");
+        body.append("- Riconsegnate le chiavi direttamente a noi: abitiamo nelle vicinanze e passeremo a ritirarle\n");
+        body.append("- Portate fuori i sacchetti della spazzatura\n");
+        body.append("- Assicuratevi di chiudere finestre, persiane e cancello prima di partire\n");
+        body.append("\nGrazie per aver scelto Torre Pali Vacanze.\n\n");
         body.append("Per qualsiasi esigenza puoi rispondere a questa email oppure contattarci al +39 388 658 70 80.");
         return body.toString();
     }
