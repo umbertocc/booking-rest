@@ -13,10 +13,14 @@ create table if not exists preventivo (
     check_in date,
     check_out date,
     persone integer,
+    prezzo numeric(12,2),
     messaggio text,
     preferenza_ricontatto varchar(255),
     source varchar(255)
 );
+
+alter table if exists preventivo
+    add column if not exists prezzo numeric(12,2);
 
 create index if not exists idx_preventivo_created_at on preventivo(created_at desc);
 create index if not exists idx_preventivo_email on preventivo(email);

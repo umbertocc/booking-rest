@@ -2,6 +2,7 @@ package com.example.mail.model;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -36,6 +37,9 @@ public class Preventivo {
 
     @Column(name = "persone")
     private Integer persone;
+
+    @Column(name = "prezzo")
+    private BigDecimal prezzo;
 
     @Column(name = "messaggio", columnDefinition = "text")
     private String messaggio;
@@ -72,6 +76,9 @@ public class Preventivo {
 
     public Integer getPersone() { return persone; }
     public void setPersone(Integer persone) { this.persone = persone; }
+
+    public BigDecimal getPrezzo() { return prezzo; }
+    public void setPrezzo(BigDecimal prezzo) { this.prezzo = prezzo; }
 
     public String getMessaggio() { return messaggio; }
     public void setMessaggio(String messaggio) { this.messaggio = messaggio; }

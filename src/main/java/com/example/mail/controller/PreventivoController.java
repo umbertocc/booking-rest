@@ -6,6 +6,7 @@ import com.example.mail.repository.PreventivoRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeParseException;
@@ -35,6 +36,8 @@ public class PreventivoController {
             @RequestParam(required = false) String checkIn,
             @RequestParam(required = false) String checkOut,
             @RequestParam(required = false) Integer persone,
+                @RequestParam(required = false) String prezzo,
+                @RequestParam(required = false) String prezzoTotale,
             @RequestParam(required = false) String preferenzaRicontatto,
             @RequestParam(required = false) String messaggio,
             @RequestParam(required = false, defaultValue = "web") String source
@@ -51,9 +54,11 @@ public class PreventivoController {
 
         String checkInRaw = firstNotBlank(checkIn, arrivo);
         String checkOutRaw = firstNotBlank(checkOut, partenza);
+        String prezzoRaw = firstNotBlank(prezzo, prezzoTotale);
 
         LocalDate checkInDate = parseOptionalDate(checkInRaw);
         LocalDate checkOutDate = parseOptionalDate(checkOutRaw);
+        BigDecimal prezzoValue = parseOptionalBigDecimal(prezzoRaw);
 
         Preventivo preventivo = new Preventivo();
         preventivo.setCreatedAt(OffsetDateTime.now());
@@ -64,6 +69,7 @@ public class PreventivoController {
         preventivo.setCheckIn(checkInDate);
         preventivo.setCheckOut(checkOutDate);
         preventivo.setPersone(persone);
+        preventivo.setPrezzo(prezzoValue);
         preventivo.setPreferenzaRicontatto(safeTrim(preferenzaRicontatto));
         preventivo.setMessaggio(safeTrim(messaggio));
         preventivo.setSource(safeTrim(source));
@@ -92,6 +98,7 @@ public class PreventivoController {
         text.append("Check-in: ").append(p.getCheckIn() != null ? p.getCheckIn() : "").append('\n');
         text.append("Check-out: ").append(p.getCheckOut() != null ? p.getCheckOut() : "").append('\n');
         text.append("Persone: ").append(p.getPersone() != null ? p.getPersone() : "").append('\n');
+        text.append("Prezzo: ").append(p.getPrezzo() != null ? p.getPrezzo() : "").append('\n');
         text.append("Preferenza ricontatto: ").append(nullToEmpty(p.getPreferenzaRicontatto())).append('\n');
         text.append("Messaggio: ").append(nullToEmpty(p.getMessaggio())).append('\n');
         text.append("Source: ").append(nullToEmpty(p.getSource())).append('\n');
@@ -115,6 +122,27 @@ public class PreventivoController {
         try {
             return LocalDate.parse(raw);
         } catch (DateTimeParseException ex) {
+            return null;
+        }
+    }
+
+    private static BigDecimal parseOptionalBigDecimal(String value) {
+        String raw = safeTrim(value);
+        if (raw.isBlank()) return null;
+
+        String sanitized = raw.replaceAll("[^0-9,.-]", "");
+        if (sanitized.isBlank()) return null;
+
+        // Esempi supportati: 1.250,50 / 1250.50 / 1250
+        if (sanitized.contains(",") && sanitized.contains(".")) {
+            sanitized = sanitized.replace(".", "").replace(",", ".");
+        } else if (sanitized.contains(",")) {
+            sanitized = sanitized.replace(",", ".");
+        }
+
+        try {
+            return new BigDecimal(sanitized);
+        } catch (NumberFormatException ex) {
             return null;
         }
     }
