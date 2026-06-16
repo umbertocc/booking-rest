@@ -8,4 +8,5 @@ import java.util.UUID;
 
 @Repository
 public interface PreventivoRepository extends JpaRepository<Preventivo, UUID> {
+	java.util.List<Preventivo> findAllByOrderByCreatedAtDesc();
 }
