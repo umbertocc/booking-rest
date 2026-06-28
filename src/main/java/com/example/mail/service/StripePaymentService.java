@@ -47,9 +47,12 @@ public class StripePaymentService {
 
             double caparraValore = prenotazione.getCaparra().doubleValue();
 
-            SessionCreateParams params = SessionCreateParams.builder()
+                String successUrlWithSession = ensureSessionIdPlaceholder(successUrl);
+                String finalSuccessUrl = appendQueryParamIfMissing(successUrlWithSession, "valore", String.valueOf(caparraValore));
+
+                SessionCreateParams params = SessionCreateParams.builder()
                     .setMode(SessionCreateParams.Mode.PAYMENT)
-                    .setSuccessUrl(successUrl + "?session_id={CHECKOUT_SESSION_ID}&valore=" + caparraValore)
+                    .setSuccessUrl(finalSuccessUrl)
                     .setCancelUrl(cancelUrl)
                     .putMetadata("prenotazioneId", prenotazione.getId().toString())
                     .addLineItem(
@@ -78,6 +81,35 @@ public class StripePaymentService {
                     "Errore creazione sessione pagamento"
             );
         }
+    }
+
+    private String ensureSessionIdPlaceholder(String url) {
+        if (url == null || url.isBlank()) {
+            return "";
+        }
+        if (url.contains("{CHECKOUT_SESSION_ID}") || url.contains("session_id=")) {
+            return url;
+        }
+        return appendQueryParam(url, "session_id", "{CHECKOUT_SESSION_ID}");
+    }
+
+    private String appendQueryParamIfMissing(String url, String key, String value) {
+        if (url.contains(key + "=")) {
+            return url;
+        }
+        return appendQueryParam(url, key, value);
+    }
+
+    private String appendQueryParam(String url, String key, String value) {
+        String delimiter;
+        if (url.endsWith("?") || url.endsWith("&")) {
+            delimiter = "";
+        } else if (url.contains("?")) {
+            delimiter = "&";
+        } else {
+            delimiter = "?";
+        }
+        return url + delimiter + key + "=" + value;
     }
 
     private String getActiveSecretKey() {

@@ -21,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -43,6 +45,9 @@ public class StripeWebhookService {
 
     @Value("${stripe.notification-email:info@torrepalivacanze.it}")
     private String notificationEmail;
+
+    @Value("${stripe.notification-email-cc:cucinelli71@gmail.com}")
+    private String notificationEmailCc;
 
     @Value("${stripe.use-test-mode:false}")
     private boolean useTestMode;
@@ -94,8 +99,12 @@ public class StripeWebhookService {
     }
 
     private void sendNotifications(Prenotazione prenotazione, Case casa, Session session) {
+        List<String> recipients = new ArrayList<>();
+        addRecipient(recipients, notificationEmail);
+        addRecipient(recipients, notificationEmailCc);
+
         emailService.sendSimpleMessage(
-                notificationEmail,
+            recipients.toArray(new String[0]),
                 ADMIN_SUBJECT_PREFIX + prenotazione.getId(),
                 buildNotificationBody(prenotazione, session)
         );
@@ -107,6 +116,13 @@ public class StripeWebhookService {
                     GUEST_SUBJECT,
                     buildGuestConfirmationBody(prenotazione, casa, session)
             );
+        }
+    }
+
+    private void addRecipient(List<String> recipients, String email) {
+        String value = valueOrEmpty(email).trim();
+        if (!value.isBlank() && !recipients.contains(value)) {
+            recipients.add(value);
         }
     }
 
