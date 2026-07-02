@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 public interface CaseRepository extends JpaRepository<Case, Long> {
 	List<Case> findByEmailAndPassword(String email, String password);
 	List<Case> findByEmail(String email);
+	Optional<Case> findFirstByNomeIgnoreCase(String nome);
 
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	@Query("SELECT c FROM Case c WHERE c.id = :id")
