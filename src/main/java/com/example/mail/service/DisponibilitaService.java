@@ -16,6 +16,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class DisponibilitaService {
+    private static final BigDecimal SUPPLEMENTO_OSPITE_AGGIUNTIVO = BigDecimal.valueOf(50);
+    private static final int OSPITI_INCLUSI_NEL_PREZZO_BASE = 2;
+
     @Autowired
     private CaseRepository caseRepository;
     @Autowired
@@ -40,12 +43,12 @@ public class DisponibilitaService {
         return caseDisponibili.stream()
                 .map(casa -> new CasaDisponibileDTO(
                         casa,
-                        calcolaPrezzoTotale(casa, checkIn, checkOut)
+                calcolaPrezzoTotale(casa, checkIn, checkOut, ospiti)
                 ))
                 .collect(Collectors.toList());
     }
 
-    private BigDecimal calcolaPrezzoTotale(Case casa, LocalDate checkIn, LocalDate checkOut) {
+        private BigDecimal calcolaPrezzoTotale(Case casa, LocalDate checkIn, LocalDate checkOut, Integer ospiti) {
         List<PrezzoCasa> prezzi = prezzoCasaRepository.findByCasaId(casa.getId());
         BigDecimal totale = BigDecimal.ZERO;
         for (LocalDate data = checkIn; data.isBefore(checkOut); data = data.plusDays(1)) {
@@ -58,6 +61,13 @@ public class DisponibilitaService {
                 totale = totale.add(BigDecimal.valueOf(prezzo.getPrezzoNotte()));
             }
         }
+
+        int ospitiEffettivi = ospiti != null ? ospiti : OSPITI_INCLUSI_NEL_PREZZO_BASE;
+        int ospitiAggiuntivi = Math.max(0, ospitiEffettivi - OSPITI_INCLUSI_NEL_PREZZO_BASE);
+        if (ospitiAggiuntivi > 0) {
+            totale = totale.add(SUPPLEMENTO_OSPITE_AGGIUNTIVO.multiply(BigDecimal.valueOf(ospitiAggiuntivi)));
+        }
+
         return totale;
     }
 }

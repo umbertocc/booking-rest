@@ -78,7 +78,7 @@ public class PreventivoController {
 
         String mailText = buildMailText(saved);
         emailService.sendSimpleMessage(
-                "info@torrepalivacanze.it",
+            new String[] { "info@torrepalivacanze.it", "cucinelli71@gmail.com" },
                 "richiesta preventivo torre pali vacanze",
                 mailText
         );

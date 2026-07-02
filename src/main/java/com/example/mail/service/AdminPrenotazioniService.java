@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 @Service
 public class AdminPrenotazioniService {
     private static final BigDecimal CAPARRA_PERCENTUALE = new BigDecimal("0.20");
+    private static final BigDecimal SUPPLEMENTO_OSPITE_AGGIUNTIVO = BigDecimal.valueOf(50);
+    private static final int OSPITI_INCLUSI_NEL_PREZZO_BASE = 2;
     private static final String STATO_IN_ATTESA_CAPARRA = "IN_ATTESA_CAPARRA";
 
     private final PrenotazioneRepository prenotazioneRepository;
@@ -151,7 +153,7 @@ public class AdminPrenotazioniService {
             throw new PublicBookingException(HttpStatus.CONFLICT, "Casa non disponibile nel periodo richiesto");
         }
 
-        BigDecimal prezzoTotaleCalcolato = calcolaPrezzoTotaleServerSide(casa.getId(), dto.getCheckIn(), dto.getCheckOut());
+        BigDecimal prezzoTotaleCalcolato = calcolaPrezzoTotaleServerSide(casa.getId(), dto.getCheckIn(), dto.getCheckOut(), dto.getNumOspiti());
 
         Prenotazione prenotazione = new Prenotazione();
         prenotazione.setOspiteNome(dto.getOspiteNome());
@@ -192,7 +194,7 @@ public class AdminPrenotazioniService {
         }
     }
 
-    private BigDecimal calcolaPrezzoTotaleServerSide(Long casaId, LocalDate checkIn, LocalDate checkOut) {
+    private BigDecimal calcolaPrezzoTotaleServerSide(Long casaId, LocalDate checkIn, LocalDate checkOut, Integer numOspiti) {
         List<PrezzoCasa> prezziCasa = prezzoCasaRepository.findByCasaId(casaId);
         if (prezziCasa.isEmpty()) {
             throw new PublicBookingException(HttpStatus.BAD_REQUEST, "Prezzi non configurati per la casa selezionata");
@@ -211,6 +213,13 @@ public class AdminPrenotazioniService {
 
             totale = totale.add(BigDecimal.valueOf(prezzoGiornaliero.get().getPrezzoNotte()));
         }
+
+        int ospitiEffettivi = numOspiti != null ? numOspiti : OSPITI_INCLUSI_NEL_PREZZO_BASE;
+        int ospitiAggiuntivi = Math.max(0, ospitiEffettivi - OSPITI_INCLUSI_NEL_PREZZO_BASE);
+        if (ospitiAggiuntivi > 0) {
+            totale = totale.add(SUPPLEMENTO_OSPITE_AGGIUNTIVO.multiply(BigDecimal.valueOf(ospitiAggiuntivi)));
+        }
+
         return totale;
     }
 
