@@ -198,9 +198,8 @@ public class PreventivoController {
             .append("</td></tr>")
             .append("<tr><td style=\"padding:18px 24px 24px 24px;\">")
             .append("<a href=\"").append(escapeHtml(linkStruttura)).append("\" target=\"_blank\" rel=\"noopener\" style=\"display:inline-block;background:#0f766e;color:#ffffff;text-decoration:none;font-weight:700;padding:12px 18px;border-radius:999px;font-size:14px;\">Vedi la struttura</a>")
-            .append("<a href=\"").append(escapeHtml(whatsappLink)).append("\" target=\"_blank\" rel=\"noopener\" style=\"display:inline-block;margin-left:8px;background:#25d366;color:#ffffff;text-decoration:none;font-weight:700;padding:12px 18px;border-radius:999px;font-size:14px;\">Contattaci su WhatsApp</a>")
             .append("<p style=\"margin:12px 0 0 0;color:#334155;font-size:14px;line-height:1.5;\"><strong>Cellulare:</strong> ").append(CONTACT_PHONE).append("</p>")
-            .append("<p style=\"margin:14px 0 0 0;color:#64748b;font-size:13px;line-height:1.5;\">Ti invieremo il preventivo personalizzato appena possibile. Per urgenze puoi rispondere direttamente a questa email.</p>")
+            .append("<p style=\"margin:14px 0 0 0;color:#64748b;font-size:13px;line-height:1.5;\">Ti invieremo il preventivo personalizzato appena possibile. Per urgenze puoi rispondere direttamente a questa email.</p>")  
             .append("</td></tr></table></td></tr></table></body></html>");
 
         return html.toString();
