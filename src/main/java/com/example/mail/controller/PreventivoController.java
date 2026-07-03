@@ -21,6 +21,8 @@ import java.util.Optional;
 public class PreventivoController {
     private static final String SITE_BASE_URL = "https://torrepalivacanze.it";
     private static final String DEFAULT_CASE_LINK = SITE_BASE_URL + "/case-vacanze";
+    private static final String CONTACT_PHONE = "3886587080";
+    private static final String DEFAULT_WHATSAPP_LINK = "https://wa.me/393886587080";
 
     private final PreventivoRepository preventivoRepository;
     private final CaseRepository caseRepository;
@@ -136,26 +138,34 @@ public class PreventivoController {
 
     private static String buildGuestAutoReplyText(Preventivo preventivo, Case casa) {
         String struttura = casa != null ? safeTrim(casa.getNome()) : safeTrim(preventivo.getAppartamento());
+        String indirizzo = casa != null ? safeTrim(casa.getIndirizzo()) : "";
         String linkStruttura = normalizeUrl(casa != null ? casa.getLink_dettaglio() : null, DEFAULT_CASE_LINK);
+        String whatsappLink = normalizeUrl(casa != null ? casa.getLink_whatsapp() : null, DEFAULT_WHATSAPP_LINK);
 
         StringBuilder text = new StringBuilder();
         text.append("Ciao ").append(nullToEmpty(preventivo.getNome())).append(",\n\n");
         text.append("abbiamo ricevuto la tua richiesta di preventivo.\n\n");
         text.append("Riepilogo richiesta:\n");
         text.append("- Struttura: ").append(structureOrFallback(struttura)).append('\n');
+        text.append("- Indirizzo: ").append(indirizzo.isBlank() ? "-" : indirizzo).append('\n');
         text.append("- Check-in: ").append(preventivo.getCheckIn() != null ? preventivo.getCheckIn() : "-").append('\n');
         text.append("- Check-out: ").append(preventivo.getCheckOut() != null ? preventivo.getCheckOut() : "-").append('\n');
         text.append("- Ospiti: ").append(preventivo.getPersone() != null ? preventivo.getPersone() : "-").append("\n\n");
         text.append("Ti invieremo il preventivo personalizzato il prima possibile.\n");
+        text.append("Cellulare: ").append(CONTACT_PHONE).append("\n");
+        text.append("WhatsApp: ").append(whatsappLink).append("\n");
         text.append("Dettagli struttura: ").append(linkStruttura).append("\n\n");
         text.append("Grazie,\nTorre Pali Vacanze");
-        return text.toString();
+        return text.toString(); 
     }
 
     private static String buildGuestAutoReplyHtml(Preventivo preventivo, Case casa) {
         String struttura = casa != null ? safeTrim(casa.getNome()) : safeTrim(preventivo.getAppartamento());
+        String indirizzo = casa != null ? safeTrim(casa.getIndirizzo()) : "";
         String strutturaDisplay = escapeHtml(structureOrFallback(struttura));
+        String indirizzoDisplay = escapeHtml(indirizzo.isBlank() ? "-" : indirizzo);
         String linkStruttura = normalizeUrl(casa != null ? casa.getLink_dettaglio() : null, DEFAULT_CASE_LINK);
+        String whatsappLink = normalizeUrl(casa != null ? casa.getLink_whatsapp() : null, DEFAULT_WHATSAPP_LINK);
         String imageUrl = normalizeUrl(casa != null ? casa.getImmagine() : null, null);
 
         String checkIn = preventivo.getCheckIn() != null ? preventivo.getCheckIn().toString() : "-";
@@ -181,12 +191,15 @@ public class PreventivoController {
         html.append("<tr><td style=\"padding:16px 24px 6px 24px;\">")
             .append("<p style=\"margin:0 0 10px 0;font-weight:700;color:#111827;font-size:16px;\">Riepilogo richiesta</p>")
             .append("<p style=\"margin:0 0 6px 0;color:#374151;font-size:14px;\"><strong>Struttura:</strong> ").append(strutturaDisplay).append("</p>")
+            .append("<p style=\"margin:0 0 6px 0;color:#374151;font-size:14px;\"><strong>Indirizzo:</strong> ").append(indirizzoDisplay).append("</p>")
             .append("<p style=\"margin:0 0 6px 0;color:#374151;font-size:14px;\"><strong>Check-in:</strong> ").append(escapeHtml(checkIn)).append("</p>")
             .append("<p style=\"margin:0 0 6px 0;color:#374151;font-size:14px;\"><strong>Check-out:</strong> ").append(escapeHtml(checkOut)).append("</p>")
             .append("<p style=\"margin:0;color:#374151;font-size:14px;\"><strong>Ospiti:</strong> ").append(escapeHtml(ospiti)).append("</p>")
             .append("</td></tr>")
             .append("<tr><td style=\"padding:18px 24px 24px 24px;\">")
             .append("<a href=\"").append(escapeHtml(linkStruttura)).append("\" target=\"_blank\" rel=\"noopener\" style=\"display:inline-block;background:#0f766e;color:#ffffff;text-decoration:none;font-weight:700;padding:12px 18px;border-radius:999px;font-size:14px;\">Vedi la struttura</a>")
+            .append("<a href=\"").append(escapeHtml(whatsappLink)).append("\" target=\"_blank\" rel=\"noopener\" style=\"display:inline-block;margin-left:8px;background:#25d366;color:#ffffff;text-decoration:none;font-weight:700;padding:12px 18px;border-radius:999px;font-size:14px;\">Contattaci su WhatsApp</a>")
+            .append("<p style=\"margin:12px 0 0 0;color:#334155;font-size:14px;line-height:1.5;\"><strong>Cellulare:</strong> ").append(CONTACT_PHONE).append("</p>")
             .append("<p style=\"margin:14px 0 0 0;color:#64748b;font-size:13px;line-height:1.5;\">Ti invieremo il preventivo personalizzato appena possibile. Per urgenze puoi rispondere direttamente a questa email.</p>")
             .append("</td></tr></table></td></tr></table></body></html>");
 
