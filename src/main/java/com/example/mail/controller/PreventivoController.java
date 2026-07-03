@@ -21,6 +21,7 @@ import java.util.Optional;
 public class PreventivoController {
     private static final String SITE_BASE_URL = "https://torrepalivacanze.it";
     private static final String DEFAULT_CASE_LINK = SITE_BASE_URL + "/case-vacanze";
+    private static final String THREAD_PREFIX = "PRV-";
     private static final String CONTACT_PHONE = "3886587080";
     private static final String DEFAULT_WHATSAPP_LINK = "https://wa.me/393886587080";
 
@@ -93,11 +94,14 @@ public class PreventivoController {
         );
 
         Optional<Case> casaMatch = findCaseByAppartamento(saved.getAppartamento());
+        String threadKey = safeTrim(saved.getId() != null ? saved.getId().toString() : "").toLowerCase(Locale.ROOT);
+        String autoresponseSubject = withThreadToken("Richiesta ricevuta - Torre Pali Vacanze", threadKey);
         emailService.sendHtmlMessage(
             saved.getEmail(),
-            "Richiesta ricevuta - Torre Pali Vacanze",
+            autoresponseSubject,
             buildGuestAutoReplyText(saved, casaMatch.orElse(null)),
-            buildGuestAutoReplyHtml(saved, casaMatch.orElse(null))
+            buildGuestAutoReplyHtml(saved, casaMatch.orElse(null)),
+            threadKey
         );
 
         return ResponseEntity.ok(Map.of(
@@ -219,6 +223,20 @@ public class PreventivoController {
             return SITE_BASE_URL + raw;
         }
         return SITE_BASE_URL + "/" + raw;
+    }
+
+    private static String withThreadToken(String subject, String threadKey) {
+        String safeSubject = safeTrim(subject);
+        String key = safeTrim(threadKey).toLowerCase(Locale.ROOT);
+        if (key.isBlank()) {
+            return safeSubject;
+        }
+
+        String token = "[" + THREAD_PREFIX + key + "]";
+        if (safeSubject.contains(token)) {
+            return safeSubject;
+        }
+        return (safeSubject + " " + token).trim();
     }
 
     private static String escapeHtml(String value) {
