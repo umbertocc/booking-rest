@@ -28,12 +28,12 @@ public class EmailService {
         message.setText(text);
         message.setFrom("info@torrepalivacanze.it");
         mailSender.send(message);
-    }
+    } 
 
     public void sendHtmlMessage(String to, String subject, String plainText, String htmlText) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setFrom("info@torrepalivacanze.it");
