@@ -16,18 +16,29 @@ public class EmailController {
             @RequestParam String to,
             @RequestParam String subject,
             @RequestParam String text,
+            @RequestParam(required = false) String html,
             @RequestParam(required = false) String threadKey
     ) {
         String normalizedThread = normalizeThreadKey(threadKey);
+        boolean hasHtml = html != null && !html.trim().isBlank();
         if (normalizedThread.isBlank()) {
-            emailService.sendSimpleMessage(to, subject, text);
+            if (hasHtml) {
+                emailService.sendHtmlMessage(to, subject, text, html);
+            } else {
+                emailService.sendSimpleMessage(to, subject, text);
+            }
         } else {
-            emailService.sendSimpleMessageWithThread(
-                    to,
-                    withThreadToken(subject, normalizedThread),
-                    text,
-                    normalizedThread
-            );
+            String threadedSubject = withThreadToken(subject, normalizedThread);
+            if (hasHtml) {
+                emailService.sendHtmlMessage(to, threadedSubject, text, html, normalizedThread);
+            } else {
+                emailService.sendSimpleMessageWithThread(
+                        to,
+                        threadedSubject,
+                        text,
+                        normalizedThread
+                );
+            }
         }
         return "Email inviata!";
     }
