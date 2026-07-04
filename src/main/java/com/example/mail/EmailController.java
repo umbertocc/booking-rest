@@ -26,7 +26,7 @@ public class EmailController {
                 emailService.sendHtmlMessage(to, subject, text, html);
             } else {
                 emailService.sendSimpleMessage(to, subject, text);
-            }
+            }   
         } else {
             String threadedSubject = withThreadToken(subject, normalizedThread);
             if (hasHtml) {

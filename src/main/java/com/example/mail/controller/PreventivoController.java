@@ -22,8 +22,8 @@ public class PreventivoController {
     private static final String SITE_BASE_URL = "https://torrepalivacanze.it";
     private static final String DEFAULT_CASE_LINK = SITE_BASE_URL + "/case-vacanze";
     private static final String THREAD_PREFIX = "PRV-";
-    private static final String CONTACT_PHONE = "3886587080";
-    private static final String DEFAULT_WHATSAPP_LINK = "https://wa.me/393886587080";
+    private static final String CONTACT_PHONE = "3804580135";
+    private static final String DEFAULT_WHATSAPP_LINK = "https://wa.me/393804580135";
 
     private final PreventivoRepository preventivoRepository;
     private final CaseRepository caseRepository;
