@@ -133,11 +133,40 @@ public class PreventivoController {
             return Optional.empty();
         }
 
+        String normalizedValue = normalizeLookupKey(value);
+
         try {
             return caseRepository.findById(Long.parseLong(value));
         } catch (NumberFormatException ignored) {
-            return caseRepository.findFirstByNomeIgnoreCase(value);
+            return caseRepository.findAll().stream()
+                    .filter(casa -> matchesCaseLookup(casa, value, normalizedValue))
+                    .findFirst();
         }
+    }
+
+    private static boolean matchesCaseLookup(Case casa, String rawValue, String normalizedValue) {
+        if (casa == null) {
+            return false;
+        }
+
+        String nome = safeTrim(casa.getNome());
+        String normalizedNome = normalizeLookupKey(nome);
+        if (!normalizedNome.isBlank() && normalizedNome.equals(normalizedValue)) {
+            return true;
+        }
+
+        if (!normalizedNome.isBlank() && (normalizedNome.contains(normalizedValue) || normalizedValue.contains(normalizedNome))) {
+            return true;
+        }
+
+        String linkDettaglio = safeTrim(casa.getLink_dettaglio());
+        String normalizedLink = normalizeLookupKey(linkDettaglio);
+        if (!normalizedLink.isBlank() && (normalizedLink.contains(normalizedValue) || normalizedValue.contains(normalizedLink))) {
+            return true;
+        }
+
+        String slugFromName = normalizeLookupKey(nome.replace(' ', '-'));
+        return !slugFromName.isBlank() && (slugFromName.equals(normalizedValue) || slugFromName.contains(normalizedValue) || normalizedValue.contains(slugFromName));
     }
 
     private static String buildGuestAutoReplyText(Preventivo preventivo, Case casa) {
@@ -257,6 +286,16 @@ public class PreventivoController {
         String p = safeTrim(primary);
         if (!p.isBlank()) return p;
         return safeTrim(secondary);
+    }
+
+    private static String normalizeLookupKey(String value) {
+        String normalized = safeTrim(value).toLowerCase(Locale.ROOT);
+        normalized = normalized.replace(".html", "");
+        normalized = normalized.replaceAll("https?://", "");
+        normalized = normalized.replaceAll("/+$", "");
+        normalized = normalized.replaceAll("[^a-z0-9]+", "-");
+        normalized = normalized.replaceAll("^-+|-+$", "");
+        return normalized;
     }
 
     private static LocalDate parseOptionalDate(String value) {
