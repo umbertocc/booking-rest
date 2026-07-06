@@ -180,6 +180,7 @@ public class PreventivoController {
         String linkStruttura = normalizeUrl(casa != null ? casa.getLink_dettaglio() : null, DEFAULT_CASE_LINK);
         String whatsappLink = resolveWhatsappLink(casa, bookingRequest);
         String prezzo = formatEuro(preventivo.getPrezzo());
+        String messaggio = safeTrim(preventivo.getMessaggio());
 
         StringBuilder text = new StringBuilder();
         text.append("Ciao ").append(nullToEmpty(preventivo.getNome())).append(",\n\n");
@@ -196,6 +197,9 @@ public class PreventivoController {
         text.append("- Ospiti: ").append(preventivo.getPersone() != null ? preventivo.getPersone() : "-").append("\n\n");
         if (!prezzo.isBlank()) {
             text.append("- Prezzo totale: ").append(prezzo).append("\n\n");
+        }
+        if (!messaggio.isBlank()) {
+            text.append("- Messaggio inviato:\n").append(messaggio).append("\n\n");
         }
         if (bookingRequest) {
             text.append("Ti contatteremo il prima possibile per la conferma e i prossimi passaggi.\n");
@@ -223,6 +227,7 @@ public class PreventivoController {
         String checkOut = formatDateIt(preventivo.getCheckOut());
         String ospiti = preventivo.getPersone() != null ? preventivo.getPersone().toString() : "-";
         String prezzo = formatEuro(preventivo.getPrezzo());
+        String messaggio = safeTrim(preventivo.getMessaggio());
         String nome = escapeHtml(nullToEmpty(preventivo.getNome()));
         String intro = bookingRequest
                 ? "Ciao " + nome + ", abbiamo ricevuto la tua richiesta di prenotazione e ti risponderemo al piu presto."
@@ -254,6 +259,7 @@ public class PreventivoController {
             .append("<p style=\"margin:0 0 6px 0;color:#374151;font-size:14px;\"><strong>Check-out:</strong> ").append(escapeHtml(checkOut)).append("</p>")
             .append("<p style=\"margin:0;color:#374151;font-size:14px;\"><strong>Ospiti:</strong> ").append(escapeHtml(ospiti)).append("</p>")
             .append(!prezzo.isBlank() ? "<p style=\"margin:6px 0 0 0;color:#166534;font-size:14px;\"><strong>Prezzo totale:</strong> " + escapeHtml(prezzo) + "</p>" : "")
+            .append(!messaggio.isBlank() ? "<p style=\"margin:8px 0 0 0;color:#374151;font-size:14px;\"><strong>Messaggio inviato:</strong><br>" + escapeHtml(messaggio).replace("\n", "<br>") + "</p>" : "")
             .append("</td></tr>")
             .append("<tr><td style=\"padding:18px 24px 24px 24px;\">")
             .append("<a href=\"").append(escapeHtml(linkStruttura)).append("\" target=\"_blank\" rel=\"noopener\" style=\"display:inline-block;background:#0f766e;color:#ffffff;text-decoration:none;font-weight:700;padding:12px 18px;border-radius:999px;font-size:14px;\">Vedi la struttura</a>")
