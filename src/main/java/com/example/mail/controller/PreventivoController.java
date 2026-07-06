@@ -178,7 +178,7 @@ public class PreventivoController {
         String struttura = casa != null ? safeTrim(casa.getNome()) : safeTrim(preventivo.getAppartamento());
         String indirizzo = casa != null ? safeTrim(casa.getIndirizzo()) : "";
         String linkStruttura = normalizeUrl(casa != null ? casa.getLink_dettaglio() : null, DEFAULT_CASE_LINK);
-        String whatsappLink = normalizeUrl(casa != null ? casa.getLink_whatsapp() : null, DEFAULT_WHATSAPP_LINK);
+        String whatsappLink = resolveWhatsappLink(casa, bookingRequest);
         String prezzo = formatEuro(preventivo.getPrezzo());
 
         StringBuilder text = new StringBuilder();
@@ -216,7 +216,7 @@ public class PreventivoController {
         String strutturaDisplay = escapeHtml(structureOrFallback(struttura));
         String indirizzoDisplay = escapeHtml(indirizzo.isBlank() ? "-" : indirizzo);
         String linkStruttura = normalizeUrl(casa != null ? casa.getLink_dettaglio() : null, DEFAULT_CASE_LINK);
-        String whatsappLink = normalizeUrl(casa != null ? casa.getLink_whatsapp() : null, DEFAULT_WHATSAPP_LINK);
+        String whatsappLink = resolveWhatsappLink(casa, bookingRequest);
         String imageUrl = normalizeUrl(casa != null ? casa.getImmagine() : null, null);
 
         String checkIn = formatDateIt(preventivo.getCheckIn());
@@ -282,6 +282,17 @@ public class PreventivoController {
             return SITE_BASE_URL + raw;
         }
         return SITE_BASE_URL + "/" + raw;
+    }
+
+    private static String resolveWhatsappLink(Case casa, boolean bookingRequest) {
+        if (bookingRequest && casa != null) {
+            String bookingWhatsapp = normalizeUrl(casa.getLink_whatsapp_prenotazione(), null);
+            if (bookingWhatsapp != null && !bookingWhatsapp.isBlank()) {
+                return bookingWhatsapp;
+            }
+        }
+
+        return normalizeUrl(casa != null ? casa.getLink_whatsapp() : null, DEFAULT_WHATSAPP_LINK);
     }
 
     private static String withThreadToken(String subject, String threadKey) {

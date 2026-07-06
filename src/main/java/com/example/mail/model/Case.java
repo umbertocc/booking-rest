@@ -19,6 +19,7 @@ public class Case {
     private String immagine;
     private String link_dettaglio;
     private String link_whatsapp;
+    private String link_whatsapp_prenotazione;
     private String indirizzo;
     private String cin;
     private String cis;
@@ -36,6 +37,9 @@ public class Case {
 
     public String getLink_whatsapp() { return link_whatsapp; }
     public void setLink_whatsapp(String link_whatsapp) { this.link_whatsapp = link_whatsapp; }
+
+    public String getLink_whatsapp_prenotazione() { return link_whatsapp_prenotazione; }
+    public void setLink_whatsapp_prenotazione(String link_whatsapp_prenotazione) { this.link_whatsapp_prenotazione = link_whatsapp_prenotazione; }
 
     public String getIndirizzo() { return indirizzo; }
     public void setIndirizzo(String indirizzo) { this.indirizzo = indirizzo; }
