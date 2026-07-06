@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeParseException;
@@ -95,7 +96,10 @@ public class PreventivoController {
 
         Optional<Case> casaMatch = findCaseByAppartamento(saved.getAppartamento());
         String threadKey = safeTrim(saved.getId() != null ? saved.getId().toString() : "").toLowerCase(Locale.ROOT);
-        String autoresponseSubject = withThreadToken("Richiesta ricevuta - Torre Pali Vacanze", threadKey);
+        String autoresponseBaseSubject = isBookingRequest(saved)
+            ? "Richiesta di prenotazione ricevuta - Torre Pali Vacanze"
+            : "Richiesta ricevuta - Torre Pali Vacanze";
+        String autoresponseSubject = withThreadToken(autoresponseBaseSubject, threadKey);
         emailService.sendHtmlMessage(
             saved.getEmail(),
             autoresponseSubject,
@@ -170,21 +174,34 @@ public class PreventivoController {
     }
 
     private static String buildGuestAutoReplyText(Preventivo preventivo, Case casa) {
+        boolean bookingRequest = isBookingRequest(preventivo);
         String struttura = casa != null ? safeTrim(casa.getNome()) : safeTrim(preventivo.getAppartamento());
         String indirizzo = casa != null ? safeTrim(casa.getIndirizzo()) : "";
         String linkStruttura = normalizeUrl(casa != null ? casa.getLink_dettaglio() : null, DEFAULT_CASE_LINK);
         String whatsappLink = normalizeUrl(casa != null ? casa.getLink_whatsapp() : null, DEFAULT_WHATSAPP_LINK);
+        String prezzo = formatEuro(preventivo.getPrezzo());
 
         StringBuilder text = new StringBuilder();
         text.append("Ciao ").append(nullToEmpty(preventivo.getNome())).append(",\n\n");
-        text.append("abbiamo ricevuto la tua richiesta di preventivo.\n\n");
+        if (bookingRequest) {
+            text.append("abbiamo ricevuto la tua richiesta di prenotazione.\n\n");
+        } else {
+            text.append("abbiamo ricevuto la tua richiesta di preventivo.\n\n");
+        }
         text.append("Riepilogo richiesta:\n");
         text.append("- Struttura: ").append(structureOrFallback(struttura)).append('\n');
         text.append("- Indirizzo: ").append(indirizzo.isBlank() ? "-" : indirizzo).append('\n');
-        text.append("- Check-in: ").append(preventivo.getCheckIn() != null ? preventivo.getCheckIn() : "-").append('\n');
-        text.append("- Check-out: ").append(preventivo.getCheckOut() != null ? preventivo.getCheckOut() : "-").append('\n');
+        text.append("- Check-in: ").append(formatDateIt(preventivo.getCheckIn())).append('\n');
+        text.append("- Check-out: ").append(formatDateIt(preventivo.getCheckOut())).append('\n');
         text.append("- Ospiti: ").append(preventivo.getPersone() != null ? preventivo.getPersone() : "-").append("\n\n");
-        text.append("Ti invieremo il preventivo personalizzato il prima possibile.\n");
+        if (!prezzo.isBlank()) {
+            text.append("- Prezzo totale: ").append(prezzo).append("\n\n");
+        }
+        if (bookingRequest) {
+            text.append("Ti contatteremo il prima possibile per la conferma e i prossimi passaggi.\n");
+        } else {
+            text.append("Ti invieremo il preventivo personalizzato il prima possibile.\n");
+        }
         text.append("Cellulare: ").append(CONTACT_PHONE).append("\n");
         text.append("WhatsApp: ").append(whatsappLink).append("\n");
         text.append("Dettagli struttura: ").append(linkStruttura).append("\n\n");
@@ -193,6 +210,7 @@ public class PreventivoController {
     }
 
     private static String buildGuestAutoReplyHtml(Preventivo preventivo, Case casa) {
+        boolean bookingRequest = isBookingRequest(preventivo);
         String struttura = casa != null ? safeTrim(casa.getNome()) : safeTrim(preventivo.getAppartamento());
         String indirizzo = casa != null ? safeTrim(casa.getIndirizzo()) : "";
         String strutturaDisplay = escapeHtml(structureOrFallback(struttura));
@@ -201,17 +219,24 @@ public class PreventivoController {
         String whatsappLink = normalizeUrl(casa != null ? casa.getLink_whatsapp() : null, DEFAULT_WHATSAPP_LINK);
         String imageUrl = normalizeUrl(casa != null ? casa.getImmagine() : null, null);
 
-        String checkIn = preventivo.getCheckIn() != null ? preventivo.getCheckIn().toString() : "-";
-        String checkOut = preventivo.getCheckOut() != null ? preventivo.getCheckOut().toString() : "-";
+        String checkIn = formatDateIt(preventivo.getCheckIn());
+        String checkOut = formatDateIt(preventivo.getCheckOut());
         String ospiti = preventivo.getPersone() != null ? preventivo.getPersone().toString() : "-";
+        String prezzo = formatEuro(preventivo.getPrezzo());
         String nome = escapeHtml(nullToEmpty(preventivo.getNome()));
+        String intro = bookingRequest
+                ? "Ciao " + nome + ", abbiamo ricevuto la tua richiesta di prenotazione e ti risponderemo al piu presto."
+                : "Ciao " + nome + ", abbiamo ricevuto la tua richiesta di preventivo e ti risponderemo al piu presto.";
+        String followUp = bookingRequest
+                ? "Ti contatteremo il prima possibile per confermare disponibilita e prossimi passaggi."
+                : "Ti invieremo il preventivo personalizzato appena possibile.";
 
         StringBuilder html = new StringBuilder();
         html.append("<!doctype html><html lang=\"it\"><body style=\"margin:0;padding:0;background:#f5f7fb;font-family:Arial,sans-serif;color:#1f2937;\">")
             .append("<table role=\"presentation\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" style=\"background:#f5f7fb;padding:24px 0;\"><tr><td align=\"center\">")
             .append("<table role=\"presentation\" width=\"620\" cellspacing=\"0\" cellpadding=\"0\" style=\"max-width:620px;width:100%;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #e5e7eb;\">")
             .append("<tr><td style=\"padding:22px 24px 10px 24px;\"><h2 style=\"margin:0 0 8px 0;color:#0f766e;font-size:24px;\">Richiesta ricevuta</h2>")
-            .append("<p style=\"margin:0;color:#475569;font-size:15px;line-height:1.6;\">Ciao ").append(nome).append(", abbiamo ricevuto la tua richiesta di preventivo e ti risponderemo al piu presto.</p></td></tr>");
+            .append("<p style=\"margin:0;color:#475569;font-size:15px;line-height:1.6;\">").append(intro).append("</p></td></tr>");
 
         if (imageUrl != null && !imageUrl.isBlank()) {
             html.append("<tr><td style=\"padding:10px 24px 0 24px;\"><img src=\"")
@@ -228,11 +253,16 @@ public class PreventivoController {
             .append("<p style=\"margin:0 0 6px 0;color:#374151;font-size:14px;\"><strong>Check-in:</strong> ").append(escapeHtml(checkIn)).append("</p>")
             .append("<p style=\"margin:0 0 6px 0;color:#374151;font-size:14px;\"><strong>Check-out:</strong> ").append(escapeHtml(checkOut)).append("</p>")
             .append("<p style=\"margin:0;color:#374151;font-size:14px;\"><strong>Ospiti:</strong> ").append(escapeHtml(ospiti)).append("</p>")
+            .append(!prezzo.isBlank() ? "<p style=\"margin:6px 0 0 0;color:#166534;font-size:14px;\"><strong>Prezzo totale:</strong> " + escapeHtml(prezzo) + "</p>" : "")
             .append("</td></tr>")
             .append("<tr><td style=\"padding:18px 24px 24px 24px;\">")
             .append("<a href=\"").append(escapeHtml(linkStruttura)).append("\" target=\"_blank\" rel=\"noopener\" style=\"display:inline-block;background:#0f766e;color:#ffffff;text-decoration:none;font-weight:700;padding:12px 18px;border-radius:999px;font-size:14px;\">Vedi la struttura</a>")
             .append("<p style=\"margin:12px 0 0 0;color:#334155;font-size:14px;line-height:1.5;\"><strong>Cellulare:</strong> ").append(CONTACT_PHONE).append("</p>")
-            .append("<p style=\"margin:14px 0 0 0;color:#64748b;font-size:13px;line-height:1.5;\">Ti invieremo il preventivo personalizzato appena possibile. Per urgenze puoi rispondere direttamente a questa email.</p>")  
+            .append("<p style=\"margin:14px 0 0 0;color:#64748b;font-size:13px;line-height:1.5;\">")
+            .append(escapeHtml(followUp))
+            .append(" Per urgenze puoi rispondere direttamente a questa email oppure scriverci su WhatsApp: ")
+            .append("<a href=\"").append(escapeHtml(whatsappLink)).append("\" target=\"_blank\" rel=\"noopener\" style=\"color:#0f766e;text-decoration:underline;\">contattaci su WhatsApp</a>.")
+            .append("</p>")
             .append("</td></tr></table></td></tr></table></body></html>");
 
         return html.toString();
@@ -331,5 +361,30 @@ public class PreventivoController {
 
     private static String nullToEmpty(String value) {
         return value == null ? "" : value;
+    }
+
+    private static boolean isBookingRequest(Preventivo preventivo) {
+        String source = safeTrim(preventivo != null ? preventivo.getSource() : "").toLowerCase(Locale.ROOT);
+        return source.startsWith("booking");
+    }
+
+    private static String formatDateIt(LocalDate value) {
+        if (value == null) {
+            return "-";
+        }
+        String iso = value.toString();
+        String[] parts = iso.split("-");
+        if (parts.length == 3) {
+            return parts[2] + "/" + parts[1] + "/" + parts[0];
+        }
+        return iso;
+    }
+
+    private static String formatEuro(BigDecimal value) {
+        if (value == null) {
+            return "";
+        }
+        NumberFormat formatter = NumberFormat.getCurrencyInstance(Locale.ITALY);
+        return formatter.format(value);
     }
 }
