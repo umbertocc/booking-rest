@@ -231,6 +231,14 @@ public class AdminPrenotazioniService {
         Prenotazione prenotazione = prenotazioneRepository.findById(prenotazioneId)
                 .orElseThrow(() -> new PublicBookingException(HttpStatus.NOT_FOUND, "Prenotazione non trovata"));
 
+        if (prenotazione.getCaparra() == null && prenotazione.getPrezzoTotale() != null) {
+            prenotazione.setCaparra(calcolaCaparraServerSide(prenotazione.getPrezzoTotale()));
+            if (prenotazione.getStato() == null || prenotazione.getStato().isBlank()) {
+                prenotazione.setStato(STATO_IN_ATTESA_CAPARRA);
+            }
+            prenotazioneRepository.save(prenotazione);
+        }
+
         if (prenotazione.getCaparra() == null) {
             throw new PublicBookingException(HttpStatus.BAD_REQUEST, "Caparra non disponibile per la prenotazione");
         }
