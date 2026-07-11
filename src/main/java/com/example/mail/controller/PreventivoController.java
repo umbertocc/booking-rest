@@ -90,14 +90,14 @@ public class PreventivoController {
         String mailText = buildMailText(saved);
         emailService.sendSimpleMessage(
             new String[] { "info@torrepalivacanze.it"},
-                "richiesta preventivo torre pali vacanze",
+                "Richiesta ricevuta - Torre Pali Vacanze",
                 mailText
         );
 
         Optional<Case> casaMatch = findCaseByAppartamento(saved.getAppartamento());
         String threadKey = safeTrim(saved.getId() != null ? saved.getId().toString() : "").toLowerCase(Locale.ROOT);
         String autoresponseBaseSubject = isBookingRequest(saved)
-            ? "Richiesta di prenotazione ricevuta - Torre Pali Vacanze"
+            ? "Richiesta ricevuta - Torre Pali Vacanze"
             : "Richiesta ricevuta - Torre Pali Vacanze";
         String autoresponseSubject = withThreadToken(autoresponseBaseSubject, threadKey);
         emailService.sendHtmlMessage(
@@ -185,7 +185,7 @@ public class PreventivoController {
         StringBuilder text = new StringBuilder();
         text.append("Ciao ").append(nullToEmpty(preventivo.getNome())).append(",\n\n");
         if (bookingRequest) {
-            text.append("abbiamo ricevuto la tua richiesta di prenotazione.\n\n");
+            text.append("abbiamo ricevuto la tua richiesta.\n\n");
         } else {
             text.append("abbiamo ricevuto la tua richiesta di preventivo.\n\n");
         }
@@ -230,7 +230,7 @@ public class PreventivoController {
         String messaggio = safeTrim(preventivo.getMessaggio());
         String nome = escapeHtml(nullToEmpty(preventivo.getNome()));
         String intro = bookingRequest
-                ? "Ciao " + nome + ", abbiamo ricevuto la tua richiesta di prenotazione e ti risponderemo al piu presto."
+                ? "Ciao " + nome + ", abbiamo ricevuto la tua richiesta e ti risponderemo al piu presto."
                 : "Ciao " + nome + ", abbiamo ricevuto la tua richiesta di preventivo e ti risponderemo al piu presto.";
         String followUp = bookingRequest
                 ? "Ti contatteremo il prima possibile per confermare disponibilita e prossimi passaggi."
