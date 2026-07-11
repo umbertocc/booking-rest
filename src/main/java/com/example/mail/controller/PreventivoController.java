@@ -230,8 +230,8 @@ public class PreventivoController {
         String messaggio = safeTrim(preventivo.getMessaggio());
         String nome = escapeHtml(nullToEmpty(preventivo.getNome()));
         String intro = bookingRequest
-                ? "Ciao " + nome + ", abbiamo ricevuto la tua richiesta e ti risponderemo al piu presto."
-                : "Ciao " + nome + ", abbiamo ricevuto la tua richiesta di preventivo e ti risponderemo al piu presto.";
+                ? "Ciao " + nome + ", abbiamo ricevuto la tua richiesta e ti risponderemo al più presto."
+                : "Ciao " + nome + ", abbiamo ricevuto la tua richiesta di preventivo e ti risponderemo al più presto.";
         String followUp = bookingRequest
                 ? "Ti contatteremo il prima possibile per confermare disponibilità e fornirti ulteriori dettagli."
                 : "Ti invieremo il preventivo personalizzato appena possibile.";
