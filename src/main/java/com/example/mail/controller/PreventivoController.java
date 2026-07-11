@@ -233,7 +233,7 @@ public class PreventivoController {
                 ? "Ciao " + nome + ", abbiamo ricevuto la tua richiesta e ti risponderemo al piu presto."
                 : "Ciao " + nome + ", abbiamo ricevuto la tua richiesta di preventivo e ti risponderemo al piu presto.";
         String followUp = bookingRequest
-                ? "Ti contatteremo il prima possibile per confermare disponibilita e prossimi passaggi."
+                ? "Ti contatteremo il prima possibile per confermare disponibilità e fornirti ulteriori dettagli."
                 : "Ti invieremo il preventivo personalizzato appena possibile.";
 
         StringBuilder html = new StringBuilder();
