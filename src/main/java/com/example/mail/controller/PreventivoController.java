@@ -187,7 +187,7 @@ public class PreventivoController {
         if (bookingRequest) {
             text.append("abbiamo ricevuto la tua richiesta.\n\n");
         } else {
-            text.append("abbiamo ricevuto la tua richiesta di preventivo.\n\n");
+            text.append("abbiamo ricevuto la tua richiesta.\n\n");
         }
         text.append("Riepilogo richiesta:\n");
         text.append("- Struttura: ").append(structureOrFallback(struttura)).append('\n');
@@ -231,7 +231,7 @@ public class PreventivoController {
         String nome = escapeHtml(nullToEmpty(preventivo.getNome()));
         String intro = bookingRequest
                 ? "Ciao " + nome + ", abbiamo ricevuto la tua richiesta e ti risponderemo al più presto."
-                : "Ciao " + nome + ", abbiamo ricevuto la tua richiesta di preventivo e ti risponderemo al più presto.";
+                : "Ciao " + nome + ", abbiamo ricevuto la tua richiesta e ti risponderemo al più presto.";
         String followUp = bookingRequest
                 ? "Ti contatteremo il prima possibile per confermare disponibilità e fornirti ulteriori dettagli."
                 : "Ti invieremo il preventivo personalizzato appena possibile.";

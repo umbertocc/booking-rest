@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
@@ -39,9 +40,7 @@ public class PrenotazioneController {
     // Prenotazioni per id casa
     @GetMapping("/casa/{casaId}")
     public List<Prenotazione> getByCasaId(@PathVariable Long casaId) {
-        return prenotazioneRepository.findAll().stream()
-                .filter(p -> p.getCasaId().equals(casaId))
-                .toList();
+        return prenotazioneRepository.findByCasaIdAndCheckOutAfter(casaId, LocalDate.now());
     }
 
     // Endpoint pubblico per creare una prenotazione senza token

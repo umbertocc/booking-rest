@@ -14,6 +14,9 @@ import java.util.UUID;
 public interface PrenotazioneRepository extends JpaRepository<Prenotazione, UUID> {
     @Query("SELECT p FROM Prenotazione p WHERE p.casaId = :casaId AND p.checkIn < :dataFine AND p.checkOut > :dataInizio")
     List<Prenotazione> findPrenotazioniConflitto(@Param("casaId") Long casaId, @Param("dataInizio") LocalDate dataInizio, @Param("dataFine") LocalDate dataFine);
+
+    List<Prenotazione> findByCasaIdAndCheckOutAfter(Long casaId, LocalDate cutoffDate);
+
     @Query("SELECT p FROM Prenotazione p WHERE p.checkIn < :dataFine AND p.checkOut > :dataInizio")
     List<Prenotazione> findPrenotazioniConflittoPerTutteLeCase(@Param("dataInizio") LocalDate dataInizio, @Param("dataFine") LocalDate dataFine);
 
