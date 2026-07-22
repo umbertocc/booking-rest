@@ -24,7 +24,8 @@ public class PreventivoController {
     private static final String DEFAULT_CASE_LINK = SITE_BASE_URL + "/case-vacanze";
     private static final String THREAD_PREFIX = "PRV-";
     private static final String CONTACT_PHONE = "+39 388 658 70 80";
-    private static final String DEFAULT_WHATSAPP_LINK = "https://wa.me/393886587080";
+    private static final String CONTACT_PHONE_SECONDARY = "+39 380 458 01 35";
+    private static final String DEFAULT_WHATSAPP_LINK = "https://wa.me/393804580135";
 
     private final PreventivoRepository preventivoRepository;
     private final CaseRepository caseRepository;
@@ -206,7 +207,7 @@ public class PreventivoController {
         } else {
             text.append("Ti invieremo il preventivo personalizzato il prima possibile.\n");
         }
-        text.append("Cellulare: ").append(CONTACT_PHONE).append("\n");
+        text.append("Cellulare: ").append(CONTACT_PHONE).append(" / ").append(CONTACT_PHONE_SECONDARY).append("\n");
         text.append("WhatsApp: ").append(whatsappLink).append("\n");
         text.append("Dettagli struttura: ").append(linkStruttura).append("\n\n");
         text.append("Grazie,\nTorre Pali Vacanze");
@@ -263,7 +264,7 @@ public class PreventivoController {
             .append("</td></tr>")
             .append("<tr><td style=\"padding:18px 24px 24px 24px;\">")
             .append("<a href=\"").append(escapeHtml(linkStruttura)).append("\" target=\"_blank\" rel=\"noopener\" style=\"display:inline-block;background:#0f766e;color:#ffffff;text-decoration:none;font-weight:700;padding:12px 18px;border-radius:999px;font-size:14px;\">Vedi la struttura</a>")
-            .append("<p style=\"margin:12px 0 0 0;color:#334155;font-size:14px;line-height:1.5;\"><strong>Cellulare:</strong> ").append(CONTACT_PHONE).append("</p>")
+            .append("<p style=\"margin:12px 0 0 0;color:#334155;font-size:14px;line-height:1.5;\"><strong>Cellulare:</strong> ").append(CONTACT_PHONE).append(" / ").append(CONTACT_PHONE_SECONDARY).append("</p>")
             .append("<p style=\"margin:14px 0 0 0;color:#64748b;font-size:13px;line-height:1.5;\">")
             .append(escapeHtml(followUp))
             .append(" Per urgenze puoi rispondere direttamente a questa email oppure scriverci su WhatsApp: ")
