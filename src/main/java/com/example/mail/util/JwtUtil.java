@@ -3,7 +3,6 @@ package com.example.mail.util;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
-import javax.crypto.SecretKey;
 
 public class JwtUtil {
     private static final String SECRET_KEY = "supersecretkeysupersecretkey123456";

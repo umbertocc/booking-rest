@@ -2,7 +2,6 @@ package com.example.mail.controller;
 
 import com.example.mail.util.JwtUtil;
 import com.example.mail.repository.CaseRepository;
-import com.example.mail.model.Case;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

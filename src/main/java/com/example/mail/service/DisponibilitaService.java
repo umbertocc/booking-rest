@@ -19,7 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class DisponibilitaService {
-    private static final BigDecimal SUPPLEMENTO_OSPITE_AGGIUNTIVO = BigDecimal.valueOf(50);
+    private static final BigDecimal SUPPLEMENTO_OSPITE_AGGIUNTIVO = BigDecimal.valueOf(30);
     private static final int OSPITI_INCLUSI_NEL_PREZZO_BASE = 2;
     private static final long MIN_STAY_NIGHTS = 3;
 

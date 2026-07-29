@@ -1,8 +1,7 @@
 package com.example.mail.dto;
 
-import com.example.mail.model.Case;
-import java.math.BigDecimal;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.UUID;
