@@ -90,24 +90,29 @@ public class PreventivoController {
 
         Optional<Case> casaMatch = findCaseByAppartamento(saved.getAppartamento());
 
-        String mailText = buildMailText(saved, casaMatch.orElse(null));
-        emailService.sendSimpleMessage(
-            new String[] { "info@torrepalivacanze.it"},
-                "Richiesta ricevuta - Torre Pali Vacanze",
-                mailText,
-                saved.getEmail()
-        );
-
         String threadKey = safeTrim(saved.getId() != null ? saved.getId().toString() : "").toLowerCase(Locale.ROOT);
-        String autoresponseBaseSubject = isBookingRequest(saved)
+        String baseSubject = isBookingRequest(saved)
             ? "Richiesta ricevuta - Torre Pali Vacanze"
             : "Richiesta ricevuta - Torre Pali Vacanze";
-        String autoresponseSubject = withThreadToken(autoresponseBaseSubject, threadKey);
+        String subjectWithThread = withThreadToken(baseSubject, threadKey);
+
+        String sharedPlainText = buildGuestAutoReplyText(saved, casaMatch.orElse(null));
+        String sharedHtmlText = buildGuestAutoReplyHtml(saved, casaMatch.orElse(null));
+
+        emailService.sendHtmlMessage(
+            "info@torrepalivacanze.it",
+            subjectWithThread,
+            sharedPlainText,
+            sharedHtmlText,
+            threadKey,
+            saved.getEmail()
+        );
+
         emailService.sendHtmlMessage(
             saved.getEmail(),
-            autoresponseSubject,
-            buildGuestAutoReplyText(saved, casaMatch.orElse(null)),
-            buildGuestAutoReplyHtml(saved, casaMatch.orElse(null)),
+            subjectWithThread,
+            sharedPlainText,
+            sharedHtmlText,
             threadKey
         );
 
@@ -115,24 +120,6 @@ public class PreventivoController {
                 "id", saved.getId(),
                 "status", "saved"
         ));
-    }
-
-    private static String buildMailText(Preventivo p, Case casaMatch) {
-        String appartamentoDisplay = resolveApartmentDisplayName(p.getAppartamento(), casaMatch);
-        StringBuilder text = new StringBuilder();
-        text.append("Nome: ").append(nullToEmpty(p.getNome())).append('\n');
-        text.append("Email: ").append(nullToEmpty(p.getEmail())).append('\n');
-        text.append("Telefono: ").append(nullToEmpty(p.getTelefono())).append('\n');
-        text.append("Appartamento: ").append(appartamentoDisplay).append('\n');
-        text.append("Check-in: ").append(p.getCheckIn() != null ? p.getCheckIn() : "").append('\n');
-        text.append("Check-out: ").append(p.getCheckOut() != null ? p.getCheckOut() : "").append('\n');
-        text.append("Persone: ").append(p.getPersone() != null ? p.getPersone() : "").append('\n');
-        text.append("Prezzo: ").append(p.getPrezzo() != null ? p.getPrezzo() : "").append('\n');
-        text.append("Preferenza ricontatto: ").append(nullToEmpty(p.getPreferenzaRicontatto())).append('\n');
-        text.append("Messaggio: ").append(nullToEmpty(p.getMessaggio())).append('\n');
-        text.append("Source: ").append(nullToEmpty(p.getSource())).append('\n');
-        text.append("Preventivo ID: ").append(p.getId());
-        return text.toString();
     }
 
     private static String resolveApartmentDisplayName(String appartamentoRaw, Case casaMatch) {

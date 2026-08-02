@@ -61,16 +61,23 @@ public class EmailService {
     }
 
     public void sendHtmlMessage(String to, String subject, String plainText, String htmlText) {
-        sendHtmlMessage(to, subject, plainText, htmlText, null);
+        sendHtmlMessage(to, subject, plainText, htmlText, null, null);
     }
 
     public void sendHtmlMessage(String to, String subject, String plainText, String htmlText, String threadKey) {
+        sendHtmlMessage(to, subject, plainText, htmlText, threadKey, null);
+    }
+
+    public void sendHtmlMessage(String to, String subject, String plainText, String htmlText, String threadKey, String replyTo) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setFrom("info@torrepalivacanze.it");
+            if (replyTo != null && !replyTo.trim().isBlank()) {
+                helper.setReplyTo(replyTo.trim());
+            }
             helper.setText(plainText, htmlText);
 
             String referenceId = buildThreadReferenceId(threadKey);
