@@ -94,7 +94,8 @@ public class PreventivoController {
         emailService.sendSimpleMessage(
             new String[] { "info@torrepalivacanze.it"},
                 "Richiesta ricevuta - Torre Pali Vacanze",
-                mailText
+                mailText,
+                saved.getEmail()
         );
 
         String threadKey = safeTrim(saved.getId() != null ? saved.getId().toString() : "").toLowerCase(Locale.ROOT);

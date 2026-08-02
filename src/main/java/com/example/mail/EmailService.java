@@ -24,11 +24,18 @@ public class EmailService {
     }
 
     public void sendSimpleMessage(String[] to, String subject, String text) {
+        sendSimpleMessage(to, subject, text, null);
+    }
+
+    public void sendSimpleMessage(String[] to, String subject, String text, String replyTo) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
         message.setSubject(subject);
         message.setText(text);
         message.setFrom("info@torrepalivacanze.it");
+        if (replyTo != null && !replyTo.trim().isBlank()) {
+            message.setReplyTo(replyTo.trim());
+        }
         mailSender.send(message);
     }
 
