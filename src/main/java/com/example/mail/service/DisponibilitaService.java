@@ -6,12 +6,14 @@ import com.example.mail.repository.CaseRepository;
 import com.example.mail.repository.PrenotazioneRepository;
 import com.example.mail.repository.PrezzoCasaRepository;
 import com.example.mail.dto.CasaDisponibileDTO;
+import com.example.mail.dto.CalendarioDisponibilitaDTO;
 import java.math.BigDecimal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +24,8 @@ public class DisponibilitaService {
     private static final BigDecimal SUPPLEMENTO_OSPITE_AGGIUNTIVO = BigDecimal.valueOf(30);
     private static final int OSPITI_INCLUSI_NEL_PREZZO_BASE = 2;
     private static final long MIN_STAY_NIGHTS = 3;
+    private static final int DEFAULT_CALENDAR_DAYS = 540;
+    private static final int MAX_CALENDAR_DAYS = 730;
 
     @Autowired
     private CaseRepository caseRepository;
@@ -51,6 +55,32 @@ public class DisponibilitaService {
                 calcolaPrezzoTotale(casa, checkIn, checkOut, ospiti)
                 ))
                 .collect(Collectors.toList());
+    }
+
+    public CalendarioDisponibilitaDTO getCalendarioDisponibilita(int giorni) {
+        int giorniRichiesti = giorni > 0 ? Math.min(giorni, MAX_CALENDAR_DAYS) : DEFAULT_CALENDAR_DAYS;
+        LocalDate oggi = LocalDate.now();
+        LocalDate fineFinestra = oggi.plusDays(giorniRichiesti + MIN_STAY_NIGHTS);
+        List<Case> caseList = caseRepository.findAll();
+        List<com.example.mail.model.Prenotazione> prenotazioni =
+                prenotazioneRepository.findPrenotazioniConflittoPerTutteLeCase(oggi, fineFinestra);
+        List<String> checkInDisponibili = new ArrayList<>();
+
+        for (LocalDate checkIn = oggi; checkIn.isBefore(oggi.plusDays(giorniRichiesti)); checkIn = checkIn.plusDays(1)) {
+            final LocalDate checkInCorrente = checkIn;
+            final LocalDate checkOutCorrente = checkInCorrente.plusDays(MIN_STAY_NIGHTS);
+            boolean casaDisponibile = caseList.stream().anyMatch(casa ->
+                    prenotazioni.stream()
+                            .filter(prenotazione -> casa.getId().equals(prenotazione.getCasaId()))
+                            .noneMatch(prenotazione ->
+                        prenotazione.getCheckIn().isBefore(checkOutCorrente)
+                            && prenotazione.getCheckOut().isAfter(checkInCorrente)));
+            if (casaDisponibile) {
+            checkInDisponibili.add(checkInCorrente.toString());
+            }
+        }
+
+        return new CalendarioDisponibilitaDTO(giorniRichiesti, checkInDisponibili);
     }
 
         private void validateStayRange(LocalDate checkIn, LocalDate checkOut) {

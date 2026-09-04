@@ -1,6 +1,7 @@
 package com.example.mail.controller;
 
 import com.example.mail.dto.CasaDisponibileDTO;
+import com.example.mail.dto.CalendarioDisponibilitaDTO;
 import com.example.mail.service.DisponibilitaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -17,6 +18,12 @@ import java.util.List;
 public class DisponibilitaController {
     @Autowired
     private DisponibilitaService disponibilitaService;
+
+    @GetMapping("/calendario")
+    public CalendarioDisponibilitaDTO getCalendarioDisponibilita(
+            @RequestParam(value = "giorni", defaultValue = "540") int giorni) {
+        return disponibilitaService.getCalendarioDisponibilita(giorni);
+    }
 
     @GetMapping("/case")
     public List<CasaDisponibileDTO> getCaseDisponibili(
